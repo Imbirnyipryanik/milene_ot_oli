@@ -1,0 +1,6533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Подарок</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    background: #f7b6cf url("images/background.jpg") center center / cover fixed no-repeat;
+}
+
+.screen {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   ГЛАВНЫЙ ЭКРАН
+   НЕ МЕНЯЛА
+========================= */
+
+#mainScreen {
+    min-height: 100vh;
+    padding: 25px 20px 40px;
+    text-align: center;
+}
+
+.mainTitle {
+    width: min(700px, 90vw);
+    max-height: 180px;
+    object-fit: contain;
+    margin: 0 auto 25px;
+    display: block;
+}
+
+.gifts {
+    width: min(1000px, 95vw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.gift {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 7px 15px rgba(0,0,0,0.18);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gift:hover {
+    transform: scale(1.04) rotate(-1deg);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+}
+
+@media (max-width: 800px) {
+
+    .gifts {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .mainTitle {
+        width: 90vw;
+    }
+}
+
+
+/* =========================
+   ИГРА 1
+========================= */
+
+#game1Screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #f7b6cf;
+}
+
+
+/* =========================
+   ЗАГОЛОВОК
+========================= */
+
+.game1Heading {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 30;
+
+    margin: 0;
+
+    color: #7d3154;
+
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: bold;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   ИГРОВАЯ ПЛОЩАДКА
+========================= */
+
+#gameArea {
+    position: absolute;
+
+    width: min(850px, 82vw);
+    height: min(650px, 72vh);
+
+    left: 50%;
+    top: 52%;
+
+    transform: translate(-50%, -50%);
+
+    overflow: hidden;
+
+    background-image: url("images/game1-bg.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    border-radius: 20px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+
+    touch-action: none;
+}
+
+
+/* =========================
+   СЧЁТ
+========================= */
+
+.game1Score {
+    position: absolute;
+
+    top: 12px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 25;
+
+    padding: 6px 14px;
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,0.82);
+
+    color: #7d3154;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   КНОПКИ
+========================= */
+
+.game1Back,
+#startButton {
+
+    position: absolute;
+
+    z-index: 40;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition: transform 0.15s ease;
+}
+
+
+/* Назад — справа */
+
+.game1Back {
+
+    top: 20px;
+    right: 25px;
+
+    width: 270px;
+}
+
+
+/* Старт — слева */
+
+#startButton {
+
+    top: 20px;
+    left: 25px;
+
+    width: 270px;
+}
+
+
+.game1Back:hover,
+#startButton:hover {
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   ПЕРСОНАЖ
+========================= */
+
+#basket {
+
+    position: absolute;
+
+    width: 190px;
+
+    height: auto;
+
+    bottom: 3%;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 15;
+
+    user-select: none;
+    -webkit-user-drag: none;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   ЦВЕТОЧКИ
+========================= */
+
+.egg {
+
+    position: absolute;
+
+    width: 85px;
+    height: auto;
+
+    z-index: 12;
+
+    user-select: none;
+    -webkit-user-drag: none;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   ПОЗДРАВЛЕНИЕ
+========================= */
+
+#winScreen {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 100;
+
+    background: rgba(255, 205, 222, 0.92);
+
+    padding: 30px;
+    overflow-y: auto;
+}
+
+
+.winText {
+
+    color: #7d3154;
+
+    font-size: clamp(18px, 2.5vw, 25px);
+
+    font-weight: normal;
+
+    line-height: 1.5;
+
+    text-align: center;
+
+    max-width: 850px;
+
+    margin: 0 auto 25px;
+
+    padding: 0 10px;
+}
+
+
+.winButton {
+
+    border: none;
+
+    border-radius: 18px;
+
+    padding: 14px 28px;
+
+    background: white;
+
+    color: #7d3154;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+    flex-shrink: 0;
+}
+
+.winButton:hover {
+    transform: scale(1.04);
+}
+
+
+/* =========================
+   ТЕЛЕФОН
+========================= */
+
+@media (max-width: 800px) {
+
+    .game1Heading {
+        top: 12px;
+        font-size: 30px;
+    }
+
+    #gameArea {
+        width: 92vw;
+        height: 70vh;
+
+        top: 54%;
+
+        border-radius: 15px;
+    }
+
+    .game1Back,
+    #startButton {
+
+        top: 12px;
+
+        width: 180px;
+    }
+
+    .game1Back {
+        right: 10px;
+    }
+
+    #startButton {
+        left: 10px;
+    }
+
+    .game1Score {
+        top: 58px;
+        font-size: 16px;
+    }
+
+    #basket {
+        width: 155px;
+        bottom: 3%;
+    }
+
+    .egg {
+        width: 70px;
+    }
+
+    #winScreen {
+        padding: 20px 12px;
+    }
+
+    .winText {
+        font-size: 17px;
+        line-height: 1.4;
+    }
+}
+
+
+/* =========================
+   ОЧЕНЬ УЗКИЙ ТЕЛЕФОН
+========================= */
+
+@media (max-width: 420px) {
+
+    .game1Heading {
+        font-size: 25px;
+    }
+
+    #gameArea {
+        height: 68vh;
+    }
+
+    .game1Back,
+    #startButton {
+        width: 145px;
+    }
+
+    #basket {
+        width: 145px;
+    }
+
+    .egg {
+        width: 65px;
+    }
+
+    .winText {
+        font-size: 15px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ГЛАВНЫЙ ЭКРАН
+===================================================== -->
+
+<div id="mainScreen" class="screen">
+
+    <img class="mainTitle"
+         src="images/title.jpg">
+
+    <div class="gifts">
+
+        <img class="gift"
+             src="images/gift1.jpg"
+             onclick="openGame(1)">
+
+       <img class="gift"
+     src="images/gift2.jpg"
+     onclick="openGame2()">
+
+      <img class="gift"
+     src="images/gift3.jpg"
+     onclick="openGame3()">
+
+        <img class="gift"
+     src="images/gift4.jpg"
+     onclick="openGame4()">
+
+        <img class="gift"
+             src="images/gift5.jpg"
+             onclick="openGame5()">
+
+        <img class="gift"
+             src="images/gift6.jpg"
+             onclick="openGame6()">
+
+        <img class="gift"
+             src="images/gift7.jpg"
+             onclick="openGame7()">
+
+        <img class="gift"
+             src="images/gift8.jpg"
+             onclick="openGame8()">
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ИГРА 1
+===================================================== -->
+
+<div id="game1Screen" class="screen hidden">
+
+
+    <!-- Заголовок -->
+
+    <h1 class="game1Heading">
+        Лови цветочки!
+    </h1>
+
+
+    <!-- Кнопка старта -->
+
+    <img
+        id="startButton"
+        src="images/game1-start.png"
+        onclick="startGame()"
+        alt="Старт"
+    >
+
+
+    <!-- Кнопка назад -->
+
+    <img
+        class="game1Back"
+        src="images/game1-back.png"
+        onclick="backToMain()"
+        alt="Назад"
+    >
+
+
+    <!-- Игровая площадка -->
+
+    <div id="gameArea">
+
+
+        <!-- Счёт -->
+
+        <div class="game1Score">
+            Поймано:
+            <span id="score">0</span>
+            / 10
+        </div>
+
+
+        <!-- Персонаж -->
+
+        <img
+            id="basket"
+            src="images/game1-basket.png"
+            alt=""
+        >
+
+
+        <!-- Поздравление -->
+
+        <div id="winScreen" class="hidden">
+
+            <div class="winText">
+                С днём рождения, Цзецзе!<br><br>
+
+                Вы уже совсем взрослая, можете читать все книжки
+                с пометкой 18+ и приобрести от меня статус old money.
+                Желаю вам удачи, успехов в ваших планах, ролках,
+                в учебе, в деньгах и во всём, чего вы только захотите!
+                Вы милейшая красотулечка, поэтому я уверена, что вам
+                покорить в этой жизни кого угодно (по крайней мере,
+                меня вы уже покорили).<br><br>
+
+                Желаю вам хорошего дня рождения ❤️<br><br>
+
+                /Сяошен
+            </div>
+
+            <button
+                class="winButton"
+                onclick="backToMain()"
+            >
+                Вернуться
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   ЭКРАНЫ
+===================================================== */
+
+const mainScreen =
+    document.getElementById("mainScreen");
+
+const game1Screen =
+    document.getElementById("game1Screen");
+
+
+function openGame(number) {
+
+    if (number === 1) {
+
+        mainScreen.classList.add("hidden");
+
+        game1Screen.classList.remove("hidden");
+
+        resetGame();
+    }
+}
+
+
+function backToMain() {
+
+    stopGame();
+
+    game1Screen.classList.add("hidden");
+
+    mainScreen.classList.remove("hidden");
+}
+
+
+/* =====================================================
+   ПЕРЕМЕННЫЕ ИГРЫ
+===================================================== */
+
+const gameArea =
+    document.getElementById("gameArea");
+
+const basket =
+    document.getElementById("basket");
+
+const startButton =
+    document.getElementById("startButton");
+
+const scoreElement =
+    document.getElementById("score");
+
+const winScreen =
+    document.getElementById("winScreen");
+
+
+let score = 0;
+
+let gameRunning = false;
+
+let spawnTimer = null;
+
+let basketX = 50;
+
+const WIN_SCORE = 10;
+
+
+/* =====================================================
+   КОРЗИНКА
+===================================================== */
+
+function setBasketPosition(percent) {
+
+    basketX =
+        Math.max(7, Math.min(93, percent));
+
+    basket.style.left =
+        basketX + "%";
+}
+
+
+/* =====================================================
+   ДВИЖЕНИЕ ПАЛЬЦЕМ / МЫШКОЙ
+===================================================== */
+
+function moveBasket(clientX) {
+
+    if (!gameRunning) return;
+
+    const rect =
+        gameArea.getBoundingClientRect();
+
+    let percent =
+        ((clientX - rect.left) / rect.width) * 100;
+
+    setBasketPosition(percent);
+}
+
+
+gameArea.addEventListener(
+    "mousemove",
+    function(event) {
+
+        moveBasket(event.clientX);
+
+    }
+);
+
+
+gameArea.addEventListener(
+    "touchmove",
+    function(event) {
+
+        event.preventDefault();
+
+        if (event.touches.length > 0) {
+
+            moveBasket(
+                event.touches[0].clientX
+            );
+
+        }
+
+    },
+    { passive: false }
+);
+
+
+/* =====================================================
+   КЛАВИАТУРА
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (!gameRunning) return;
+
+        const step = 5;
+
+
+        if (
+            event.key === "ArrowLeft" ||
+            event.key.toLowerCase() === "a"
+        ) {
+
+            setBasketPosition(
+                basketX - step
+            );
+
+        }
+
+
+        if (
+            event.key === "ArrowRight" ||
+            event.key.toLowerCase() === "d"
+        ) {
+
+            setBasketPosition(
+                basketX + step
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   НАЧАЛО ИГРЫ
+===================================================== */
+
+function startGame() {
+
+    if (gameRunning) return;
+
+    score = 0;
+
+    scoreElement.textContent =
+        score;
+
+    gameRunning = true;
+
+    startButton.classList.add(
+        "hidden"
+    );
+
+    winScreen.classList.add(
+        "hidden"
+    );
+
+    setBasketPosition(50);
+
+
+    spawnTimer =
+        setInterval(
+            createFlower,
+            800
+        );
+
+}
+
+
+/* =====================================================
+   СОЗДАНИЕ ЦВЕТОЧКА
+===================================================== */
+
+function createFlower() {
+
+    if (!gameRunning) return;
+
+
+    const flower =
+        document.createElement("img");
+
+
+    flower.src =
+        "images/game1-egg.png";
+
+
+    flower.className =
+        "egg";
+
+
+    const flowerWidth = 85;
+
+    const maxX =
+        Math.max(
+            0,
+            gameArea.clientWidth -
+            flowerWidth
+        );
+
+
+    const x =
+        Math.random() * maxX;
+
+
+    flower.style.left =
+        x + "px";
+
+    flower.style.top =
+        "-90px";
+
+
+    gameArea.appendChild(
+        flower
+    );
+
+
+    let y = -90;
+
+
+    const speed =
+        3 + Math.random() * 2.5;
+
+
+    function fall() {
+
+        if (!gameRunning) {
+
+            flower.remove();
+
+            return;
+        }
+
+
+        y += speed;
+
+
+        flower.style.top =
+            y + "px";
+
+
+        if (isCaught(flower)) {
+
+            score++;
+
+
+            scoreElement.textContent =
+                score;
+
+
+            flower.remove();
+
+
+            if (
+                score >= WIN_SCORE
+            ) {
+
+                winGame();
+
+            }
+
+
+            return;
+        }
+
+
+        if (
+            y >
+            gameArea.clientHeight + 50
+        ) {
+
+            flower.remove();
+
+            return;
+        }
+
+
+        requestAnimationFrame(
+            fall
+        );
+    }
+
+
+    requestAnimationFrame(
+        fall
+    );
+}
+
+
+/* =====================================================
+   ПОПАДАНИЕ
+===================================================== */
+
+function isCaught(flower) {
+
+    const flowerRect =
+        flower.getBoundingClientRect();
+
+    const basketRect =
+        basket.getBoundingClientRect();
+
+
+    const overlapX =
+        flowerRect.right >
+            basketRect.left &&
+        flowerRect.left <
+            basketRect.right;
+
+
+    const overlapY =
+        flowerRect.bottom >
+            basketRect.top &&
+        flowerRect.top <
+            basketRect.bottom;
+
+
+    return (
+        overlapX &&
+        overlapY
+    );
+}
+
+
+/* =====================================================
+   ПОБЕДА
+===================================================== */
+
+function winGame() {
+
+    gameRunning = false;
+
+
+    if (spawnTimer) {
+
+        clearInterval(
+            spawnTimer
+        );
+
+        spawnTimer = null;
+    }
+
+
+    winScreen.classList.remove(
+        "hidden"
+    );
+}
+
+
+/* =====================================================
+   ОСТАНОВКА
+===================================================== */
+
+function stopGame() {
+
+    gameRunning = false;
+
+
+    if (spawnTimer) {
+
+        clearInterval(
+            spawnTimer
+        );
+
+        spawnTimer = null;
+    }
+
+
+    document
+        .querySelectorAll(".egg")
+        .forEach(
+            flower => flower.remove()
+        );
+}
+
+
+/* =====================================================
+   СБРОС
+===================================================== */
+
+function resetGame() {
+
+    stopGame();
+
+
+    score = 0;
+
+    scoreElement.textContent =
+        "0";
+
+
+    setBasketPosition(50);
+
+
+    startButton.classList.remove(
+        "hidden"
+    );
+
+
+    winScreen.classList.add(
+        "hidden"
+    );
+}
+
+
+/* =====================================================
+   НАЧАЛЬНАЯ ПОЗИЦИЯ
+===================================================== */
+
+setBasketPosition(50);
+
+</script>
+
+</body>
+</html>
+```html
+<!-- =====================================================
+     ИГРА 2 — МЕМОРИ
+===================================================== -->
+
+<style>
+
+/* =========================
+   ЭКРАН ИГРЫ 2
+========================= */
+
+#game2Screen {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: #f7b6cf url("images/game2fon.jpg")
+                center center / cover no-repeat;
+}
+
+
+/* =========================
+   ЗАГОЛОВОК
+========================= */
+
+.game2Heading {
+    position: absolute;
+
+    top: 18px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    margin: 0;
+
+    z-index: 20;
+
+    color: #7d3154;
+
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: bold;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   КНОПКА НАЗАД
+========================= */
+
+.game2Back {
+    position: absolute;
+
+    top: 18px;
+    right: 25px;
+
+    width: 170px;
+
+    z-index: 30;
+
+    cursor: pointer;
+
+    transition: transform 0.15s ease;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.game2Back:hover {
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   ИГРОВОЕ ПОЛЕ
+========================= */
+
+#memoryBoard {
+
+    position: absolute;
+
+    left: 50%;
+    top: 53%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(760px, 82vw);
+    height: min(650px, 75vh);
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+
+    gap: 15px;
+
+    padding: 15px;
+
+    background: rgba(255, 255, 255, 0.25);
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.18);
+
+}
+
+
+/* =========================
+   КАРТОЧКА
+========================= */
+
+.memoryCard {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    cursor: pointer;
+
+    perspective: 900px;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* Внутренняя часть карточки */
+
+.memoryCardInner {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    transition:
+        transform 0.45s ease;
+
+    transform-style: preserve-3d;
+}
+
+
+/* Перевёрнутая карточка */
+
+.memoryCard.flipped .memoryCardInner,
+.memoryCard.matched .memoryCardInner {
+
+    transform: rotateY(180deg);
+}
+
+
+/* =========================
+   СТОРОНЫ КАРТОЧКИ
+========================= */
+
+.memoryFront,
+.memoryBack {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 15px;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 12px rgba(0,0,0,0.18);
+}
+
+
+/* Закрытая сторона */
+
+.memoryFront {
+
+    background: #f5a9c5;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border: 3px solid rgba(255,255,255,0.8);
+}
+
+
+/* Небольшой декоративный знак на закрытой карточке */
+
+.memoryFront::after {
+
+    content: "♥";
+
+    color: rgba(255,255,255,0.75);
+
+    font-size: clamp(25px, 4vw, 45px);
+}
+
+
+/* Открытая сторона */
+
+.memoryBack {
+
+    transform: rotateY(180deg);
+
+    background: white;
+}
+
+
+/* Картинка пары */
+
+.memoryBack img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* Найденная пара */
+
+.memoryCard.matched .memoryBack {
+
+    box-shadow:
+        0 0 0 4px rgba(255,255,255,0.9),
+        0 5px 18px rgba(125,49,84,0.3);
+}
+
+
+/* =========================
+   СЧЁТЧИК
+========================= */
+
+.game2Score {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 12px;
+
+    transform: translateX(-50%);
+
+    z-index: 30;
+
+    padding: 7px 15px;
+
+    border-radius: 15px;
+
+    background: rgba(255,255,255,0.85);
+
+    color: #7d3154;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   ПОЗДРАВЛЕНИЕ
+========================= */
+
+#game2WinScreen {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 30px;
+
+    overflow-y: auto;
+
+    background:
+        rgba(255, 205, 222, 0.94);
+}
+
+
+.game2WinText {
+
+    width: min(850px, 92vw);
+
+    color: #7d3154;
+
+    font-size: clamp(18px, 2.5vw, 25px);
+
+    line-height: 1.5;
+
+    text-align: center;
+
+    margin: auto auto 25px;
+}
+
+
+.game2WinButton {
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 18px;
+
+    padding: 14px 30px;
+
+    background: white;
+
+    color: #7d3154;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.2);
+
+    margin-bottom: auto;
+}
+
+.game2WinButton:hover {
+
+    transform: scale(1.04);
+}
+
+
+/* =========================
+   ТЕЛЕФОН
+========================= */
+
+@media (max-width: 800px) {
+
+    .game2Heading {
+
+        top: 10px;
+
+        font-size: 29px;
+    }
+
+
+    .game2Back {
+
+        top: 10px;
+        right: 10px;
+
+        width: 120px;
+    }
+
+
+    #memoryBoard {
+
+        width: 94vw;
+        height: 70vh;
+
+        top: 53%;
+
+        gap: 9px;
+
+        padding: 9px;
+
+        border-radius: 18px;
+    }
+
+
+    .memoryFront,
+    .memoryBack {
+
+        border-radius: 10px;
+    }
+
+
+    .memoryFront {
+
+        border-width: 2px;
+    }
+
+
+    .game2Score {
+
+        bottom: 7px;
+
+        font-size: 15px;
+
+        padding: 5px 11px;
+    }
+
+
+    #game2WinScreen {
+
+        padding: 18px 12px;
+    }
+
+
+    .game2WinText {
+
+        font-size: 16px;
+
+        line-height: 1.4;
+    }
+
+
+    .game2WinButton {
+
+        font-size: 17px;
+
+        padding: 11px 23px;
+    }
+}
+
+
+/* =========================
+   ОЧЕНЬ УЗКИЙ ТЕЛЕФОН
+========================= */
+
+@media (max-width: 420px) {
+
+    .game2Heading {
+
+        font-size: 24px;
+    }
+
+
+    .game2Back {
+
+        width: 100px;
+    }
+
+
+    #memoryBoard {
+
+        height: 68vh;
+
+        gap: 7px;
+
+        padding: 7px;
+    }
+
+
+    .memoryFront::after {
+
+        font-size: 25px;
+    }
+}
+
+</style>
+
+
+<!-- =====================================================
+     ЭКРАН ИГРЫ 2
+===================================================== -->
+
+<div id="game2Screen" class="screen hidden">
+
+
+    <!-- Заголовок -->
+
+    <h1 class="game2Heading">
+        Найди пары!
+    </h1>
+
+
+    <!-- Назад -->
+
+    <img
+        class="game2Back"
+        src="images/game1-back.png"
+        onclick="backFromGame2()"
+        alt="Назад"
+    >
+
+
+    <!-- Игровое поле -->
+
+    <div id="memoryBoard"></div>
+
+
+    <!-- Счёт -->
+
+    <div class="game2Score">
+        Найдено пар:
+        <span id="memoryScore">0</span>
+        / 8
+    </div>
+
+
+    <!-- =================================================
+         ПОБЕДА
+    ================================================= -->
+
+    <div id="game2WinScreen" class="hidden">
+
+        <div class="game2WinText">
+
+            Дорогая моя Миленочка, поздравляю тебя
+            с днём рождения! Ты самая лучшая девочка-булочка
+            на свете и будь такой до самого конца!<br><br>
+
+            Будь для самой себя такой же яркой звёздочкой
+            какой стала для меня и многих других!<br><br>
+
+            Вкусно кушай и делай то что приносит в твою душу
+            счастье! А у тех кто считают что это какие-то
+            глупости, пусть вырастает болючий рог на жопе &gt;:)<br><br>
+
+            Люблю тебя моя кисонька!<br><br>
+
+            /Слойка с лимоном ❤️
+
+        </div>
+
+
+        <button
+            class="game2WinButton"
+            onclick="backFromGame2()"
+        >
+            Вернуться
+        </button>
+
+    </div>
+
+</div>
+<style></style>
+<script>
+
+/* =====================================================
+   ИГРА 2 — МЕМОРИ
+===================================================== */
+
+const game2Screen =
+    document.getElementById("game2Screen");
+
+const memoryBoard =
+    document.getElementById("memoryBoard");
+
+const memoryScore =
+    document.getElementById("memoryScore");
+
+const game2WinScreen =
+    document.getElementById("game2WinScreen");
+
+
+/* =========================
+   ПЕРЕМЕННЫЕ
+========================= */
+
+let firstCard = null;
+
+let secondCard = null;
+
+let lockBoard = false;
+
+let matchedPairs = 0;
+
+
+/* =========================
+   КАРТИНКИ
+========================= */
+
+const memoryImages = [
+
+    "images/memo1.jpg",
+    "images/memo2.jpg",
+    "images/memo3.jpg",
+    "images/memo4.jpg",
+    "images/memo5.jpg",
+    "images/memo6.jpg",
+    "images/memo7.jpg",
+    "images/memo8.jpg"
+
+];
+
+
+/* =========================
+   ОТКРЫТИЕ ИГРЫ
+========================= */
+
+function openGame2() {
+
+    document
+        .getElementById("mainScreen")
+        .classList.add("hidden");
+
+    game2Screen
+        .classList.remove("hidden");
+
+    startMemoryGame();
+}
+
+
+/* =========================
+   НАЗАД
+========================= */
+
+function backFromGame2() {
+
+    game2Screen
+        .classList.add("hidden");
+
+    document
+        .getElementById("mainScreen")
+        .classList.remove("hidden");
+}
+
+
+/* =========================
+   ПЕРЕМЕШИВАНИЕ
+========================= */
+
+function shuffle(array) {
+
+    const result = [...array];
+
+    for (
+        let i = result.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+        [
+            result[i],
+            result[j]
+        ] = [
+            result[j],
+            result[i]
+        ];
+    }
+
+    return result;
+}
+
+
+/* =========================
+   СОЗДАНИЕ ПОЛЯ
+========================= */
+
+function startMemoryGame() {
+
+    memoryBoard.innerHTML = "";
+
+    matchedPairs = 0;
+
+    firstCard = null;
+
+    secondCard = null;
+
+    lockBoard = false;
+
+    memoryScore.textContent = "0";
+
+    game2WinScreen
+        .classList.add("hidden");
+
+
+    /* Делаем две одинаковые колоды */
+
+    const cards =
+        shuffle([
+            ...memoryImages,
+            ...memoryImages
+        ]);
+
+
+    cards.forEach(
+        (image, index) => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "memoryCard";
+
+            card.dataset.image =
+                image;
+
+
+            card.innerHTML = `
+
+                <div class="memoryCardInner">
+
+                    <div class="memoryFront"></div>
+
+                    <div class="memoryBack">
+
+                        <img
+                            src="${image}"
+                            alt=""
+                        >
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            card.addEventListener(
+                "click",
+                () => flipCard(card)
+            );
+
+
+            memoryBoard.appendChild(card);
+
+        }
+    );
+}
+
+
+/* =========================
+   ПЕРЕВОРОТ КАРТОЧКИ
+========================= */
+
+function flipCard(card) {
+
+    if (lockBoard) return;
+
+    if (card === firstCard) return;
+
+    if (card.classList.contains("matched")) {
+        return;
+    }
+
+
+    card.classList.add("flipped");
+
+
+    if (!firstCard) {
+
+        firstCard = card;
+
+        return;
+    }
+
+
+    secondCard = card;
+
+    checkForMatch();
+}
+
+
+/* =========================
+   ПРОВЕРКА ПАРЫ
+========================= */
+
+function checkForMatch() {
+
+    const isMatch =
+        firstCard.dataset.image ===
+        secondCard.dataset.image;
+
+
+    if (isMatch) {
+
+        disableCards();
+
+    } else {
+
+        unflipCards();
+
+    }
+}
+
+
+/* =========================
+   ЕСЛИ СОВПАЛИ
+========================= */
+
+function disableCards() {
+
+    firstCard.classList.add(
+        "matched"
+    );
+
+    secondCard.classList.add(
+        "matched"
+    );
+
+
+    matchedPairs++;
+
+    memoryScore.textContent =
+        matchedPairs;
+
+
+    resetTurn();
+
+
+    if (matchedPairs >= 8) {
+
+        setTimeout(
+            showMemoryWin,
+            500
+        );
+    }
+}
+
+
+/* =========================
+   ЕСЛИ НЕ СОВПАЛИ
+========================= */
+
+function unflipCards() {
+
+    lockBoard = true;
+
+
+    setTimeout(
+        () => {
+
+            firstCard.classList.remove(
+                "flipped"
+            );
+
+            secondCard.classList.remove(
+                "flipped"
+            );
+
+
+            resetTurn();
+
+        },
+        850
+    );
+}
+
+
+/* =========================
+   СБРОС ХОДА
+========================= */
+
+function resetTurn() {
+
+    firstCard = null;
+
+    secondCard = null;
+
+    lockBoard = false;
+}
+
+
+/* =========================
+   ПОБЕДА
+========================= */
+
+function showMemoryWin() {
+
+    game2WinScreen
+        .classList.remove("hidden");
+}
+
+
+/* =========================
+   ГОТОВО
+========================= */
+</script>
+
+
+<!-- =====================================================
+     ИГРА 3
+===================================================== -->
+
+<style>
+#game3Screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #f7b6cf url("images/background.jpg") center center / cover no-repeat;
+}
+
+.game3Heading {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    margin: 0;
+    color: #7d3154;
+    font-size: clamp(25px, 4vw, 44px);
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.game3Back {
+    position: absolute;
+    top: 18px;
+    right: 25px;
+    width: 170px;
+    z-index: 30;
+    cursor: pointer;
+}
+
+#game3Board {
+    position: absolute;
+    inset: 0;
+}
+
+.game3Picture {
+    position: absolute;
+    width: clamp(100px, 16vw, 220px);
+    height: clamp(100px, 16vw, 220px);
+    object-fit: contain;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.35);
+    box-shadow: 0 7px 18px rgba(0,0,0,0.18);
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.game3Emoji {
+    position: absolute;
+    width: clamp(155px, 23vw, 320px);
+    min-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 22px;
+    color: #513044;
+    font-size: clamp(17px, 2.5vw, 34px);
+    cursor: pointer;
+    box-shadow: 0 7px 18px rgba(0,0,0,0.16);
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.game3Picture.selected,
+.game3Emoji.selected {
+    transform: scale(1.08);
+    outline: 4px solid #7d3154;
+}
+
+.game3Picture.matched,
+.game3Emoji.matched {
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+#game3Message {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    z-index: 40;
+    padding: 10px 20px;
+    border-radius: 18px;
+    background: white;
+    color: #7d3154;
+    font-weight: bold;
+    opacity: 0;
+}
+
+#game3WinScreen {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    background: rgba(255,205,222,0.95);
+    overflow-y: auto;
+}
+
+.game3WinText {
+    max-width: 850px;
+    color: #7d3154;
+    font-size: clamp(17px, 2.5vw, 25px);
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.game3WinButton {
+    border: none;
+    border-radius: 18px;
+    padding: 14px 30px;
+    background: white;
+    color: #7d3154;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+@media (max-width: 800px) {
+    .game3Back {
+        top: 10px;
+        right: 10px;
+        width: 120px;
+    }
+
+    .game3Picture {
+        width: 100px;
+        height: 100px;
+    }
+
+    .game3Emoji {
+        width: 155px;
+        font-size: 17px;
+    }
+}
+</style>
+
+
+<div id="game3Screen" class="screen hidden">
+
+    <h1 class="game3Heading">Найди пару (опять)</h1>
+
+    <img
+        class="game3Back"
+        src="images/game1-back.png"
+        onclick="backFromGame3()"
+        alt="Назад"
+    >
+
+    <div id="game3Board">
+
+        <img class="game3Picture" data-pair="1" src="images/game3im.png">
+        <img class="game3Picture" data-pair="2" src="images/game3im2.png">
+        <img class="game3Picture" data-pair="3" src="images/game3im3.png">
+        <img class="game3Picture" data-pair="4" src="images/game3im4.png">
+
+        <div class="game3Emoji" data-pair="1">⚔️🩰💎😭🎤</div>
+        <div class="game3Emoji" data-pair="2">🌹🛡️💗🦁👑</div>
+        <div class="game3Emoji" data-pair="3">🛡️🎸🌺🦁</div>
+        <div class="game3Emoji" data-pair="4">🕶️🥊❤️💙</div>
+
+    </div>
+
+    <div id="game3Message">Не-а, попробуй ещё раз!</div>
+
+    <div id="game3WinScreen" class="hidden">
+
+        <div class="game3WinText">
+            Привет Милена! С днём рождения! Желаю чтобы я как можно
+            меньше попадал по тебе во время сцендвижов, счастья добра
+            и всего такого хорошего, желаю тебе лайка подписку
+            колокольчик, и чтобы не забывала комментарий.<br><br>
+
+            С днём рождения! Милена!<br><br>
+
+            /Ваня ❤️
+        </div>
+
+        <button
+            class="game3WinButton"
+            onclick="backFromGame3()"
+        >
+            Вернуться
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+let game3SelectedPicture = null;
+let game3SelectedEmoji = null;
+let game3Matched = 0;
+
+function openGame3() {
+    document.getElementById("mainScreen").classList.add("hidden");
+    document.getElementById("game3Screen").classList.remove("hidden");
+    startGame3();
+}
+
+function backFromGame3() {
+    document.getElementById("game3Screen").classList.add("hidden");
+    document.getElementById("mainScreen").classList.remove("hidden");
+}
+
+function startGame3() {
+    game3SelectedPicture = null;
+    game3SelectedEmoji = null;
+    game3Matched = 0;
+
+    document.getElementById("game3Message").style.opacity = "0";
+    document.getElementById("game3WinScreen").classList.add("hidden");
+
+    document.querySelectorAll(".game3Picture, .game3Emoji").forEach(item => {
+        item.classList.remove("selected", "matched");
+    });
+
+    randomizeGame3Positions();
+}
+
+function randomizeGame3Positions() {
+    const picturePositions = [
+        { left: "4%", top: "18%" },
+        { left: "27%", top: "62%" },
+        { left: "56%", top: "17%" },
+        { left: "73%", top: "60%" }
+    ];
+
+    const emojiPositions = [
+        { left: "17%", top: "38%" },
+        { left: "39%", top: "18%" },
+        { left: "43%", top: "76%" },
+        { left: "80%", top: "32%" }
+    ];
+
+    picturePositions.sort(() => Math.random() - 0.5);
+    emojiPositions.sort(() => Math.random() - 0.5);
+
+    document.querySelectorAll(".game3Picture").forEach((picture, index) => {
+        picture.style.left = picturePositions[index].left;
+        picture.style.top = picturePositions[index].top;
+    });
+
+    document.querySelectorAll(".game3Emoji").forEach((emoji, index) => {
+        emoji.style.left = emojiPositions[index].left;
+        emoji.style.top = emojiPositions[index].top;
+    });
+}
+
+document.querySelectorAll(".game3Picture").forEach(picture => {
+    picture.addEventListener("click", () => {
+        if (picture.classList.contains("matched")) return;
+
+        document.querySelectorAll(".game3Picture").forEach(item => {
+            item.classList.remove("selected");
+        });
+
+        picture.classList.add("selected");
+        game3SelectedPicture = picture;
+        checkGame3Pair();
+    });
+});
+
+document.querySelectorAll(".game3Emoji").forEach(emoji => {
+    emoji.addEventListener("click", () => {
+        if (emoji.classList.contains("matched")) return;
+
+        document.querySelectorAll(".game3Emoji").forEach(item => {
+            item.classList.remove("selected");
+        });
+
+        emoji.classList.add("selected");
+        game3SelectedEmoji = emoji;
+        checkGame3Pair();
+    });
+});
+
+function checkGame3Pair() {
+    if (!game3SelectedPicture || !game3SelectedEmoji) return;
+
+    const picturePair = game3SelectedPicture.dataset.pair;
+    const emojiPair = game3SelectedEmoji.dataset.pair;
+
+    if (picturePair === emojiPair) {
+        game3SelectedPicture.classList.remove("selected");
+        game3SelectedEmoji.classList.remove("selected");
+
+        game3SelectedPicture.classList.add("matched");
+        game3SelectedEmoji.classList.add("matched");
+
+        game3SelectedPicture = null;
+        game3SelectedEmoji = null;
+        game3Matched++;
+
+        if (game3Matched === 4) {
+            setTimeout(() => {
+                document.getElementById("game3WinScreen").classList.remove("hidden");
+            }, 500);
+        }
+    } else {
+        const message = document.getElementById("game3Message");
+        message.style.opacity = "1";
+
+        setTimeout(() => {
+            message.style.opacity = "0";
+        }, 900);
+
+        game3SelectedPicture.classList.remove("selected");
+        game3SelectedEmoji.classList.remove("selected");
+
+        game3SelectedPicture = null;
+        game3SelectedEmoji = null;
+    }
+}
+</script>
+<!-- =====================================================
+     ИГРА 4 — ТЕСТ
+===================================================== -->
+
+<style>
+#game4Screen {
+    position: relative;
+    min-height: 100vh;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    background: #f8c9dc;
+    overflow: hidden;
+}
+
+.game4Content {
+    position: relative;
+    z-index: 1;
+    max-width: 850px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.game4Heading {
+    font-size: clamp(28px, 5vw, 48px);
+    color: #7b315e;
+    margin: 10px 0 25px;
+    text-shadow: 2px 2px 4px white;
+}
+
+.game4Back {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 55px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.game4Question {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(100, 40, 80, 0.2);
+}
+
+.game4QuestionText {
+    font-size: clamp(19px, 3vw, 28px);
+    line-height: 1.35;
+    color: #542344;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.game4Answers {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.game4Answer {
+    border: none;
+    border-radius: 15px;
+    padding: 15px 20px;
+    font-size: clamp(16px, 2.5vw, 21px);
+    cursor: pointer;
+    background: #f4c8dc;
+    color: #542344;
+    transition: 0.2s;
+}
+
+.game4Answer:hover {
+    transform: scale(1.02);
+    background: #eeb0ce;
+}
+
+.game4Answer.correct {
+    background: #a8dfb0;
+}
+
+.game4Answer.wrong {
+    background: #efa3a3;
+}
+
+.game4Answer:disabled {
+    cursor: default;
+}
+
+#game4Progress {
+    margin-top: 18px;
+    color: #71375b;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#game4Result {
+    margin-top: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #71375b;
+}
+
+#game4WinScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #f8c9dc;
+}
+
+.game4WinBox {
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 35px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.93);
+    text-align: center;
+    box-shadow: 0 5px 30px rgba(80, 30, 70, 0.3);
+}
+
+.game4WinText {
+    white-space: pre-line;
+    color: #71375b;
+    font-size: clamp(20px, 3vw, 30px);
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.game4WinButton {
+    border: none;
+    border-radius: 15px;
+    padding: 14px 25px;
+    font-size: 20px;
+    cursor: pointer;
+    background: #e7a9c7;
+    color: #542344;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    #game4Screen {
+        padding: 25px 12px;
+    }
+
+    .game4Question {
+        padding: 18px;
+    }
+
+    .game4Back {
+        width: 45px;
+        top: 12px;
+        left: 12px;
+    }
+
+    .game4Heading {
+        margin-top: 35px;
+    }
+
+    .game4WinBox {
+        padding: 22px;
+    }
+}
+</style>
+
+<div id="game4Screen" class="screen hidden">
+
+```
+<img
+    class="game4Back"
+    src="images/game1-back.png"
+    onclick="backFromGame4()"
+>
+
+<div class="game4Content">
+
+    <h1 class="game4Heading">Театральный экзамен 🎭</h1>
+
+    <div id="game4QuestionBox" class="game4Question">
+
+        <div id="game4QuestionText" class="game4QuestionText"></div>
+
+        <div id="game4Answers" class="game4Answers"></div>
+
+    </div>
+
+    <div id="game4Progress"></div>
+    <div id="game4Result"></div>
+
+</div>
+```
+
+</div>
+
+<div id="game4WinScreen" class="hidden">
+
+```
+<div class="game4WinBox">
+
+    <div class="game4WinText">Дорогая наша Милена ты очень классная и милая🥰🥰🥰🥰
+```
+
+Я очень рада что знакома с тобой и хочу пожелать тебе здоровья и достижения всех поставленных тобой целей!!! Я очень тебя люблю 😍😍😍 С днём рождения зайка🥳🥳🥳🥳🥳🥳
+/Маша</div>
+
+```
+    <button class="game4WinButton" onclick="backFromGame4()">
+        На главный экран 💗
+    </button>
+
+</div>
+```
+
+</div>
+
+<script>
+const game4Questions = [
+    {
+        question: "Как называется то, ради чего персонаж совершает все действия в течение спектакля, его главная цель?",
+        answers: [
+            { text: "Задача сцены", correct: false },
+            { text: "Сверхзадача", correct: true },
+            { text: "Этюд", correct: false }
+        ]
+    },
+    {
+        question: "Что в системе Станиславского называют предлагаемыми обстоятельствами?",
+        answers: [
+            {
+                text: "Внешние условия — погода, освещение и декорации на сцене",
+                correct: false
+            },
+            {
+                text: "Требования режиссера по поведению актера за кулисами",
+                correct: false
+            },
+            {
+                text: "Вся вымышленная жизнь персонажа, в которую верит актер",
+                correct: true
+            }
+        ]
+    },
+    {
+        question: "Что означает понятие партнерства на сцене?",
+        answers: [
+            {
+                text: "Взаимодействие и умение реально видеть, слушать и реагировать на другого актера",
+                correct: true
+            },
+            {
+                text: "Совместная оплата аренды репетиционного зала",
+                correct: false
+            },
+            {
+                text: "Синхронное выполнение танцевальных движений",
+                correct: false
+            }
+        ]
+    },
+    {
+        question: "Кто самая крутая актриса всех времен?",
+        answers: [
+            { text: "Милена", correct: true },
+            { text: "Милена", correct: true },
+            { text: "Милена", correct: true }
+        ]
+    }
+];
+
+let game4CurrentQuestion = 0;
+let game4Score = 0;
+let game4Locked = false;
+
+function openGame4() {
+    document.getElementById("mainScreen").classList.add("hidden");
+    document.getElementById("game4Screen").classList.remove("hidden");
+    document.getElementById("game4WinScreen").classList.add("hidden");
+
+    game4CurrentQuestion = 0;
+    game4Score = 0;
+    game4Locked = false;
+
+    document.getElementById("game4Result").textContent = "";
+
+    showGame4Question();
+}
+
+function showGame4Question() {
+    const question = game4Questions[game4CurrentQuestion];
+
+    document.getElementById("game4QuestionText").textContent =
+        question.question;
+
+    document.getElementById("game4Progress").textContent =
+        "Вопрос " + (game4CurrentQuestion + 1) + " из " + game4Questions.length;
+
+    const answersBox = document.getElementById("game4Answers");
+    answersBox.innerHTML = "";
+
+    game4Locked = false;
+
+    question.answers.forEach(answer => {
+        const button = document.createElement("button");
+
+        button.className = "game4Answer";
+        button.textContent = answer.text;
+
+        button.onclick = function() {
+            answerGame4(button, answer.correct);
+        };
+
+        answersBox.appendChild(button);
+    });
+}
+
+function answerGame4(button, isCorrect) {
+    if (game4Locked) return;
+
+    game4Locked = true;
+
+    const allButtons = document.querySelectorAll(
+        "#game4Answers .game4Answer"
+    );
+
+    allButtons.forEach(btn => {
+        btn.disabled = true;
+    });
+
+    if (isCorrect) {
+        button.classList.add("correct");
+        game4Score++;
+    } else {
+        button.classList.add("wrong");
+    }
+
+    setTimeout(() => {
+        game4CurrentQuestion++;
+
+        if (game4CurrentQuestion < game4Questions.length) {
+            showGame4Question();
+        } else {
+            finishGame4();
+        }
+    }, 700);
+}
+
+function finishGame4() {
+    document.getElementById("game4Screen").classList.add("hidden");
+
+    if (game4Score === game4Questions.length) {
+        document.getElementById("game4WinScreen").classList.remove("hidden");
+    } else {
+        document.getElementById("game4Result").textContent =
+            "Ты ответила правильно на " + game4Score + " из 4 вопросов!";
+
+        game4CurrentQuestion = 0;
+        game4Score = 0;
+
+        setTimeout(() => {
+            document.getElementById("game4Screen").classList.remove("hidden");
+            document.getElementById("game4Result").textContent =
+                "Не все ответы правильные, попробуй ещё раз 💗";
+            showGame4Question();
+        }, 500);
+    }
+}
+
+function backFromGame4() {
+    document.getElementById("game4Screen").classList.add("hidden");
+    document.getElementById("game4WinScreen").classList.add("hidden");
+    document.getElementById("mainScreen").classList.remove("hidden");
+}
+</script>
+<style>
+/* =========================
+   ИГРА 5 — ФОНАРИКИ
+========================= */
+
+#game5Screen {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px 15px;
+
+    background: #f8c9dc;
+    overflow: hidden;
+}
+
+.game5Back {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+
+    width: 55px;
+    cursor: pointer;
+
+    z-index: 20;
+}
+
+.game5Heading {
+    color: #720f38;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: bold;
+
+    margin: 0 0 20px;
+
+    text-align: center;
+}
+
+.game5Board {
+    position: relative;
+
+    width: min(1000px, 90vw);
+    height: min(650px, 70vh);
+
+    overflow: hidden;
+
+    border-radius: 25px;
+
+    background-image: url("images/game4fon.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    box-shadow:
+        0 8px 25px rgba(80, 30, 70, 0.3);
+}
+
+
+/* ФОНАРИКИ */
+
+.game5Lantern {
+    position: absolute;
+
+    width: clamp(65px, 9vw, 115px);
+    height: auto;
+
+    cursor: pointer;
+
+    user-select: none;
+    -webkit-user-drag: none;
+
+    z-index: 5;
+
+    transition:
+        transform 0.2s ease,
+        filter 0.25s ease;
+}
+
+.game5Lantern:hover {
+    transform: scale(1.07);
+}
+
+
+/* ФОНАРИК ЗАГОРЕЛСЯ */
+
+.game5Lantern.lit {
+    filter:
+        brightness(1.8)
+        drop-shadow(0 0 15px rgba(255, 240, 150, 1))
+        drop-shadow(0 0 30px rgba(255, 190, 80, 0.8));
+
+    transform: scale(1.12);
+}
+
+
+/* ПРАВИЛЬНО НАЖАТ */
+
+.game5Lantern.correct {
+    filter:
+        brightness(1.7)
+        drop-shadow(0 0 15px rgba(255, 240, 150, 0.9));
+
+    transform: scale(1.1);
+}
+
+
+/* ЭКРАН ПОБЕДЫ */
+
+#game5WinScreen {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    background: rgba(248, 201, 220, 0.96);
+}
+
+.game5WinBox {
+    width: min(750px, 90vw);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    padding: 35px;
+
+    border-radius: 30px;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 30px rgba(80, 30, 70, 0.3);
+}
+
+.game5WinText {
+    color: #71375b;
+
+    font-size: clamp(20px, 3vw, 30px);
+
+    line-height: 1.5;
+
+    margin: 0 0 25px;
+
+    white-space: pre-line;
+}
+
+.game5WinButton {
+    border: none;
+
+    border-radius: 15px;
+
+    padding: 14px 25px;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    background: #e7a9c7;
+
+    color: #542344;
+}
+
+.game5WinButton:hover {
+    background: #dc91b8;
+    transform: scale(1.03);
+}
+
+
+/* МОБИЛЬНАЯ ВЕРСИЯ */
+
+@media (max-width: 600px) {
+
+    #game5Screen {
+        padding: 20px 10px;
+    }
+
+    .game5Back {
+        width: 45px;
+
+        top: 12px;
+        left: 12px;
+    }
+
+    .game5Heading {
+        margin-top: 35px;
+        margin-bottom: 12px;
+
+        font-size: 28px;
+    }
+
+    .game5Board {
+        width: 94vw;
+        height: 70vh;
+
+        border-radius: 18px;
+    }
+
+    .game5Lantern {
+        width: 58px;
+    }
+
+    .game5WinBox {
+        padding: 22px;
+    }
+}
+</style>
+
+
+<!-- =========================
+     ЭКРАН ИГРЫ 5
+========================= -->
+
+<div id="game5Screen" class="screen hidden">
+
+    <img
+        class="game5Back"
+        src="images/game1-back.png"
+        onclick="backFromGame5()"
+    >
+
+    <h1 class="game5Heading">
+        Зажги в правильном порядке
+    </h1>
+
+    <div
+        id="game5Board"
+        class="game5Board"
+    ></div>
+
+</div>
+
+
+<!-- =========================
+     ПОБЕДА
+========================= -->
+
+<div
+    id="game5WinScreen"
+    class="hidden"
+>
+
+    <div class="game5WinBox">
+
+        <div class="game5WinText">
+С днём рождения Миленке , ты классная и веселая девочка , оставайся такой всегда ♥️💜
+
+С днём рождения Милена
+/Кирилл
+        </div>
+
+        <button
+            class="game5WinButton"
+            onclick="backFromGame5()"
+        >
+            На главный экран 💗
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   ИГРА 5
+========================= */
+const game5Screen =
+    document.getElementById("game5Screen");
+
+const game5Board =
+    document.getElementById("game5Board");
+
+const game5WinScreen =
+    document.getElementById("game5WinScreen");
+
+
+let game5Sequence = [];
+
+let game5PlayerSequence = [];
+
+let game5Running = false;
+
+let game5ShowingSequence = false;
+
+
+/* =========================
+   ЗАПУСК ИГРЫ
+========================= */
+
+function openGame5() {
+    document
+        .getElementById("mainScreen")
+        .classList
+        .add("hidden");
+
+    game5Screen
+        .classList
+        .remove("hidden");
+
+    game5WinScreen
+        .classList
+        .add("hidden");
+
+    createGame5();
+}
+
+
+/* =========================
+   СОЗДАНИЕ 5 ФОНАРИКОВ
+========================= */
+
+function createGame5() {
+
+    game5Board.innerHTML = "";
+
+    game5Sequence = [];
+
+    game5PlayerSequence = [];
+
+    game5Running = true;
+
+    game5ShowingSequence = false;
+
+
+    const lanterns = [];
+
+
+    for (let i = 0; i < 5; i++) {
+
+        const lantern =
+            document.createElement("img");
+
+        lantern.src =
+            "images/game4f.png";
+
+        lantern.className =
+            "game5Lantern";
+
+        lantern.dataset.id = i;
+
+
+        game5Board.appendChild(
+            lantern
+        );
+
+        lanterns.push(
+            lantern
+        );
+    }
+
+
+    /* Ждём загрузки размеров */
+
+    requestAnimationFrame(() => {
+
+        placeGame5Lanterns(
+            lanterns
+        );
+
+        startGame5Sequence(
+            lanterns
+        );
+
+    });
+}
+
+
+/* =========================
+   РАСПОЛОЖЕНИЕ ФОНАРИКОВ
+========================= */
+
+function placeGame5Lanterns(
+    lanterns
+) {
+
+    const placed = [];
+
+
+    lanterns.forEach(
+        lantern => {
+
+            let success = false;
+
+
+            for (
+                let attempt = 0;
+                attempt < 300;
+                attempt++
+            ) {
+
+                const width =
+                    lantern.offsetWidth;
+
+                const height =
+                    lantern.offsetHeight;
+
+
+                const maxLeft =
+                    game5Board.clientWidth -
+                    width -
+                    10;
+
+                const maxTop =
+                    game5Board.clientHeight -
+                    height -
+                    10;
+
+
+                const left =
+                    10 +
+                    Math.random() *
+                    Math.max(
+                        1,
+                        maxLeft - 10
+                    );
+
+
+                const top =
+                    10 +
+                    Math.random() *
+                    Math.max(
+                        1,
+                        maxTop - 10
+                    );
+
+
+                let overlaps = false;
+
+
+                for (
+                    const other of placed
+                ) {
+
+                    const otherLeft =
+                        parseFloat(
+                            other.style.left
+                        );
+
+                    const otherTop =
+                        parseFloat(
+                            other.style.top
+                        );
+
+                    const otherWidth =
+                        other.offsetWidth;
+
+                    const otherHeight =
+                        other.offsetHeight;
+
+
+                    if (
+                        !(
+                            left +
+                            width +
+                            20 <=
+                            otherLeft ||
+
+                            left >=
+                            otherLeft +
+                            otherWidth +
+                            20 ||
+
+                            top +
+                            height +
+                            20 <=
+                            otherTop ||
+
+                            top >=
+                            otherTop +
+                            otherHeight +
+                            20
+                        )
+                    ) {
+
+                        overlaps = true;
+
+                        break;
+                    }
+                }
+
+
+                if (!overlaps) {
+
+                    lantern.style.left =
+                        left + "px";
+
+                    lantern.style.top =
+                        top + "px";
+
+
+                    placed.push(
+                        lantern
+                    );
+
+                    success = true;
+
+                    break;
+                }
+            }
+
+
+            /* Запасной вариант */
+
+            if (!success) {
+
+                const index =
+                    placed.length;
+
+                lantern.style.left =
+                    (
+                        10 +
+                        index * 55
+                    ) + "px";
+
+                lantern.style.top =
+                    "20px";
+
+
+                placed.push(
+                    lantern
+                );
+            }
+
+
+            lantern.addEventListener(
+                "click",
+                () =>
+                    clickGame5Lantern(
+                        lantern
+                    )
+            );
+
+        }
+    );
+}
+
+
+/* =========================
+   СЛУЧАЙНЫЙ ПОРЯДОК
+========================= */
+
+function startGame5Sequence(
+    lanterns
+) {
+
+    game5Sequence =
+        shuffleGame5(
+            lanterns.map(
+                lantern =>
+                    Number(
+                        lantern.dataset.id
+                    )
+            )
+        );
+
+
+    game5PlayerSequence = [];
+
+    game5ShowingSequence = true;
+
+
+    setTimeout(() => {
+
+        showGame5Sequence(
+            lanterns,
+            0
+        );
+
+    }, 700);
+}
+
+
+/* =========================
+   ПОКАЗ ПОРЯДКА
+========================= */
+
+function showGame5Sequence(
+    lanterns,
+    index
+) {
+
+    if (!game5Running)
+        return;
+
+
+    if (
+        index >=
+        game5Sequence.length
+    ) {
+
+        game5ShowingSequence =
+            false;
+
+
+        lanterns.forEach(
+            lantern =>
+                lantern.classList.remove(
+                    "lit"
+                )
+        );
+
+
+        return;
+    }
+
+
+    const id =
+        game5Sequence[index];
+
+
+    const lantern =
+        lanterns.find(
+            item =>
+                Number(
+                    item.dataset.id
+                ) === id
+        );
+
+
+    if (!lantern)
+        return;
+
+
+    lantern.classList.add(
+        "lit"
+    );
+
+
+    setTimeout(() => {
+
+        lantern.classList.remove(
+            "lit"
+        );
+
+
+        setTimeout(() => {
+
+            showGame5Sequence(
+                lanterns,
+                index + 1
+            );
+
+        }, 180);
+
+    }, 650);
+}
+
+
+/* =========================
+   НАЖАТИЕ НА ФОНАРИК
+========================= */
+
+function clickGame5Lantern(
+    lantern
+) {
+
+    if (!game5Running)
+        return;
+
+
+    /* Пока показывается порядок —
+       нажимать нельзя */
+
+    if (game5ShowingSequence)
+        return;
+
+
+    const clickedId =
+        Number(
+            lantern.dataset.id
+        );
+
+
+    const currentIndex =
+        game5PlayerSequence.length;
+
+
+    const correctId =
+        game5Sequence[
+            currentIndex
+        ];
+
+
+    /* =====================
+       ОШИБКА
+    ===================== */
+
+    if (
+        clickedId !==
+        correctId
+    ) {
+
+        game5PlayerSequence = [];
+
+
+        lantern.classList.add(
+            "lit"
+        );
+
+
+        setTimeout(() => {
+
+            lantern.classList.remove(
+                "lit"
+            );
+
+        }, 350);
+
+
+        const lanterns = [
+            ...game5Board.querySelectorAll(
+                ".game5Lantern"
+            )
+        ];
+
+
+        game5ShowingSequence =
+            true;
+
+
+        setTimeout(() => {
+
+            showGame5Sequence(
+                lanterns,
+                0
+            );
+
+        }, 500);
+
+
+        return;
+    }
+
+
+    /* =====================
+       ПРАВИЛЬНО
+    ===================== */
+
+    game5PlayerSequence.push(
+        clickedId
+    );
+
+
+    lantern.classList.add(
+        "correct"
+    );
+
+
+    setTimeout(() => {
+
+        lantern.classList.remove(
+            "correct"
+        );
+
+    }, 300);
+
+
+    /* =====================
+       ПОБЕДА
+    ===================== */
+
+    if (
+        game5PlayerSequence.length ===
+        game5Sequence.length
+    ) {
+
+        game5Running = false;
+
+
+        setTimeout(() => {
+
+            game5WinScreen.classList.remove(
+                "hidden"
+            );
+
+        }, 350);
+    }
+}
+
+
+/* =========================
+   ПЕРЕМЕШИВАНИЕ
+========================= */
+
+function shuffleGame5(
+    array
+) {
+
+    const result =
+        [...array];
+
+
+    for (
+        let i =
+            result.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+
+        [
+            result[i],
+            result[j]
+        ] = [
+            result[j],
+            result[i]
+        ];
+    }
+
+
+    return result;
+}
+
+
+/* =========================
+   НАЗАД
+========================= */
+
+function backFromGame5() {
+
+    game5Running = false;
+
+    game5ShowingSequence = false;
+
+
+    game5Screen
+        .classList
+        .add("hidden");
+
+
+    game5WinScreen
+        .classList
+        .add("hidden");
+
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .remove("hidden");
+}
+
+</script>
+```html
+<!-- =========================
+     ИГРА 6 — НЕ НАЖИМАЙ НА ФЛАУИ
+========================= -->
+
+<style>
+#game6Screen {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: #f8c9dc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: "Courier New", monospace;
+}
+
+.game6Back {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 55px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.game6Heading {
+    position: absolute;
+    top: 20px;
+    margin: 0;
+    color: #720f38;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: clamp(25px, 5vw, 42px);
+    text-align: center;
+    z-index: 20;
+}
+
+.game6Field {
+    position: relative;
+    width: min(1000px, 92vw);
+    height: min(650px, 75vh);
+    background: #f8c9dc;
+    border: 5px solid #111;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.game6Flowey {
+    position: absolute;
+    width: clamp(110px, 16vw, 180px);
+    height: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+    cursor: pointer;
+    z-index: 10;
+    transition:
+        left 0.25s ease,
+        top 0.25s ease,
+        transform 0.15s ease;
+}
+
+.game6Flowey:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.game6Dialogue {
+    position: absolute;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+
+    width: min(800px, 88%);
+    min-height: 105px;
+
+    box-sizing: border-box;
+    padding: 22px 25px;
+
+    background: #050505;
+    border: 4px solid white;
+
+    color: white;
+
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: clamp(16px, 2.3vw, 25px);
+    line-height: 1.45;
+
+    z-index: 30;
+    cursor: pointer;
+
+    box-shadow: 5px 5px 0 #000;
+}
+
+.game6Dialogue::after {
+    content: "▼";
+
+    position: absolute;
+    right: 15px;
+    bottom: 7px;
+
+    font-size: 15px;
+
+    animation: game6Arrow 0.8s infinite;
+}
+
+@keyframes game6Arrow {
+    0%, 100% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* ФИНАЛЬНОЕ ПОЗДРАВЛЕНИЕ */
+
+.game6Win {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+
+    background: rgba(0, 0, 0, 0.94);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.game6WinBox {
+    width: min(850px, 94vw);
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    background: black;
+    border: 5px solid white;
+
+    color: white;
+
+    text-align: left;
+
+    font-family: "Courier New", monospace;
+}
+
+.game6WinTitle {
+    text-align: center;
+
+    font-size: clamp(24px, 4vw, 36px);
+
+    margin-bottom: 25px;
+}
+
+.game6WinText {
+    font-size: clamp(15px, 2vw, 21px);
+
+    line-height: 1.55;
+
+    white-space: pre-line;
+
+    margin-bottom: 25px;
+}
+
+.game6Present {
+    display: block;
+
+    width: 160px;
+    max-width: 55%;
+
+    margin: 10px auto 25px;
+}
+
+.game6Button {
+    display: block;
+
+    margin: 0 auto;
+
+    border: 3px solid white;
+
+    background: black;
+
+    color: white;
+
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+
+    font-size: 19px;
+
+    padding: 12px 25px;
+
+    cursor: pointer;
+}
+
+.game6Button:hover {
+    background: white;
+    color: black;
+}
+
+.game6Hidden {
+    display: none !important;
+}
+
+
+@media (max-width: 600px) {
+
+    .game6Back {
+        width: 45px;
+        top: 12px;
+        left: 12px;
+    }
+
+    .game6Heading {
+        top: 15px;
+        font-size: 25px;
+    }
+
+    .game6Field {
+        width: 95vw;
+        height: 75vh;
+        border-width: 3px;
+    }
+
+    .game6Dialogue {
+        bottom: 15px;
+        width: 90%;
+        min-height: 100px;
+        padding: 18px;
+        font-size: 17px;
+    }
+
+    .game6Flowey {
+        width: 105px;
+    }
+
+    .game6WinBox {
+        padding: 20px;
+    }
+}
+</style>
+
+
+<!-- ЭКРАН ИГРЫ 6 -->
+
+<div
+    id="game6Screen"
+    class="hidden"
+>
+
+    <img
+        class="game6Back"
+        src="images/game1-back.png"
+        onclick="backFromGame6()"
+    >
+
+    <h1 class="game6Heading">
+        Не нажимай на Флауи
+    </h1>
+
+    <div
+        id="game6Field"
+        class="game6Field"
+    >
+
+        <img
+            id="game6Flowey"
+            class="game6Flowey"
+            src="images/game6flhappy.png"
+        >
+
+        <div
+            id="game6Dialogue"
+            class="game6Dialogue"
+        >
+            * Привет!
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ФИНАЛЬНОЕ ПОЗДРАВЛЕНИЕ -->
+
+<div
+    id="game6Win"
+    class="game6Win game6Hidden"
+>
+
+    <div class="game6WinBox">
+
+        <div class="game6WinTitle">
+            ♥ С днём рождения, Милена! ♥
+        </div>
+
+        <img
+            class="game6Present"
+            src="images/game6present.png"
+        >
+
+        <div class="game6WinText">Моя самая любимая соседка по комнате, первачка и подружка нафиг!
+
+Столько всего произошло за год жизни с тобой под одной крышей, что в целом я уже могу назвать тебя своим родным человеком, типа сестрёнки или, как нынче и вышло своей дочей. Хе хе
+
+Ты блин капец, какая крутая, я тебя очень люблю и знаю, что у тебя всё получится. Впереди ещё три незабываемых весёлых года, во время которых желаю тебе сиять, так же, как и на первом курсе (а то и круче).
+
+Я навострила уши и жду новые коллежские сплетни, а так же бесконечные рассказы о твоих новых достижениях. Что поделать, крутышка нах.
+
+Пусть жизнь будет полна веселья, творчества и твоего неиссякаемого интузиазма. Твой четвёртый курс всегда под боком. И ты действительно НАША первачка. Ребёнок выпускников 22 - 26. Сразу видно хи хи.
+
+Короче ультуй, фарми ауру, генерируй свагу, могай всех и всё будет лол кек ещкере!
+
+/Ася</div>
+
+        <button
+            class="game6Button"
+            onclick="backFromGame6()"
+        >
+            На главный экран 💗
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+/* =========================
+   ИГРА 6 — JAVASCRIPT
+========================= */
+
+const game6Screen =
+    document.getElementById("game6Screen");
+
+const game6Field =
+    document.getElementById("game6Field");
+
+const game6Flowey =
+    document.getElementById("game6Flowey");
+
+const game6Dialogue =
+    document.getElementById("game6Dialogue");
+
+const game6Win =
+    document.getElementById("game6Win");
+
+
+let game6Step = 0;
+let game6Running = false;
+let game6CatchCount = 0;
+
+
+/* ОТКРЫТИЕ */
+
+function openGame6() {
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .add("hidden");
+
+    game6Screen
+        .classList
+        .remove("hidden");
+
+    game6Win
+        .classList
+        .add("game6Hidden");
+
+    startGame6();
+}
+
+
+/* НАЧАЛО */
+
+function startGame6() {
+
+    game6Step = 0;
+    game6CatchCount = 0;
+    game6Running = true;
+
+    game6Flowey.src =
+        "images/game6flhappy.png";
+
+    game6Flowey.style.left =
+        "50%";
+
+    game6Flowey.style.top =
+        "30%";
+
+    game6Flowey.style.transform =
+        "translate(-50%, -50%)";
+
+    game6Flowey.onclick =
+        nextGame6Dialogue;
+
+    game6Dialogue.innerHTML =
+        "* Привет!<br>* Я Флауи!";
+
+    game6Dialogue.onclick =
+        nextGame6Dialogue;
+}
+
+
+/* ДИАЛОГ */
+
+function nextGame6Dialogue() {
+
+    if (!game6Running)
+        return;
+
+    game6Step++;
+
+
+    if (game6Step === 1) {
+
+        game6Dialogue.innerHTML =
+            "* Я просто милый цветочек!<br>* Нажми на меня!";
+
+        return;
+    }
+
+
+    if (game6Step === 2) {
+
+        game6Dialogue.innerHTML =
+            "* Давай!<br>* Нажми на меня!";
+
+        return;
+    }
+
+
+    if (game6Step === 3) {
+
+        game6Dialogue.innerHTML =
+            "* Ещё раз!";
+
+        return;
+    }
+
+
+    if (game6Step === 4) {
+
+        game6Flowey.src =
+            "images/game6flsurpr.png";
+
+        game6Dialogue.innerHTML =
+            "* Ого...<br>* Ты действительно продолжаешь?";
+
+        return;
+    }
+
+
+    if (game6Step === 5) {
+
+        game6Flowey.src =
+            "images/game6flangry.png";
+
+        game6Dialogue.innerHTML =
+            "* ЭЙ!<br>* ПРЕКРАТИ.";
+
+        return;
+    }
+
+
+    if (game6Step === 6) {
+
+        game6Dialogue.innerHTML =
+            "* Ладно.<br>* Посмотрим, сможешь ли ты меня поймать.";
+
+        game6Flowey.onclick =
+            catchGame6Flowey;
+
+        setTimeout(() => {
+            moveGame6Flowey();
+        }, 100);
+
+        return;
+    }
+}
+
+
+/* ЛОВИМ ФЛАУИ */
+
+function catchGame6Flowey() {
+
+    if (!game6Running)
+        return;
+
+    game6CatchCount++;
+
+
+    if (game6CatchCount >= 6) {
+
+        finishGame6();
+
+        return;
+    }
+
+
+    game6Flowey.style.transform =
+        "translate(-50%, -50%) scale(0.85)";
+
+
+    setTimeout(() => {
+
+        game6Flowey.style.transform =
+            "translate(-50%, -50%) scale(1)";
+
+        moveGame6Flowey();
+
+    }, 120);
+}
+
+
+/* ПЕРЕМЕЩЕНИЕ */
+
+function moveGame6Flowey() {
+
+    const width =
+        game6Field.clientWidth;
+
+    const height =
+        game6Field.clientHeight;
+
+    const flowerWidth =
+        game6Flowey.offsetWidth;
+
+    const flowerHeight =
+        game6Flowey.offsetHeight;
+
+
+    const minX =
+        flowerWidth / 2 + 20;
+
+    const maxX =
+        width -
+        flowerWidth / 2 -
+        20;
+
+
+    const minY =
+        flowerHeight / 2 + 20;
+
+    const maxY =
+        height -
+        flowerHeight / 2 -
+        150;
+
+
+    const x =
+        minX +
+        Math.random() *
+        Math.max(
+            1,
+            maxX - minX
+        );
+
+
+    const y =
+        minY +
+        Math.random() *
+        Math.max(
+            1,
+            maxY - minY
+        );
+
+
+    game6Flowey.style.left =
+        x + "px";
+
+    game6Flowey.style.top =
+        y + "px";
+}
+
+
+/* ПОБЕДА */
+
+function finishGame6() {
+
+    game6Running = false;
+
+    game6Flowey.onclick = null;
+
+    game6Dialogue.innerHTML =
+        "* ...<br>* Ты меня достала.";
+
+    game6Flowey.src =
+        "images/game6flsurpr.png";
+
+
+    setTimeout(() => {
+
+        game6Win
+            .classList
+            .remove("game6Hidden");
+
+    }, 900);
+}
+
+
+/* НАЗАД */
+
+function backFromGame6() {
+
+    game6Running = false;
+
+    game6Screen
+        .classList
+        .add("hidden");
+
+    game6Win
+        .classList
+        .add("game6Hidden");
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .remove("hidden");
+}
+</script>
+```
+<!-- =========================
+     ИГРА 7 — ТЕАТРАЛЬНЫЙ IQ
+========================= -->
+
+<style>
+
+#game7Screen {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+
+    background: #f8c9dc;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    font-family: Arial, sans-serif;
+}
+
+.game7Back {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+
+    width: 55px;
+
+    cursor: pointer;
+    z-index: 100;
+}
+
+.game7Title {
+    position: absolute;
+    top: 25px;
+
+    margin: 0;
+
+    color: #720f38;
+
+    font-size: clamp(26px, 5vw, 43px);
+    font-weight: 800;
+
+    text-align: center;
+}
+
+.game7Box {
+    width: min(900px, 94vw);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 22px;
+}
+
+.game7QuestionNumber {
+    color: #720f38;
+
+    font-size: clamp(18px, 3vw, 25px);
+    font-weight: bold;
+
+    text-align: center;
+}
+
+.game7Question {
+    width: 100%;
+
+    background: white;
+
+    border: 4px solid #720f38;
+    border-radius: 18px;
+
+    padding: 30px 25px;
+
+    box-sizing: border-box;
+
+    color: #720f38;
+
+    font-size: clamp(20px, 3.2vw, 30px);
+    font-weight: bold;
+
+    text-align: center;
+
+    box-shadow: 7px 7px 0 rgba(114, 15, 56, 0.25);
+}
+
+.game7Answers {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+}
+
+.game7Answer {
+    min-height: 75px;
+
+    padding: 15px;
+
+    border: 4px solid #720f38;
+    border-radius: 15px;
+
+    background: white;
+
+    color: #720f38;
+
+    font-family: Arial, sans-serif;
+    font-size: clamp(16px, 2.4vw, 22px);
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.12s,
+        background 0.12s;
+}
+
+.game7Answer:hover {
+    transform: translateY(-3px);
+    background: #ffeaf2;
+}
+
+.game7Answer:active {
+    transform: translateY(1px);
+}
+
+.game7Answer.correct {
+    background: #bff0c8;
+}
+
+.game7Answer.wrong {
+    background: #ffb8c9;
+}
+
+.game7Comment {
+    min-height: 30px;
+
+    color: #720f38;
+
+    font-size: clamp(16px, 2.5vw, 21px);
+    font-weight: bold;
+
+    text-align: center;
+}
+
+.game7Next {
+    display: none;
+
+    border: 4px solid #720f38;
+    border-radius: 15px;
+
+    background: #720f38;
+    color: white;
+
+    padding: 13px 28px;
+
+    font-family: Arial, sans-serif;
+    font-size: 19px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.game7Next:hover {
+    background: #8f1748;
+}
+
+
+/* ФИНАЛ */
+
+.game7Win {
+    position: fixed;
+    inset: 0;
+
+    z-index: 200;
+
+    background: #f8c9dc;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+}
+
+.game7WinBox {
+    width: min(850px, 94vw);
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: white;
+
+    border: 5px solid #720f38;
+    border-radius: 20px;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    color: #720f38;
+
+    box-shadow: 10px 10px 0 rgba(114, 15, 56, 0.25);
+}
+
+.game7WinTitle {
+    text-align: center;
+
+    font-size: clamp(25px, 5vw, 38px);
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+.game7WinText {
+    font-size: clamp(16px, 2vw, 21px);
+
+    line-height: 1.55;
+
+    white-space: pre-line;
+
+    margin-bottom: 25px;
+}
+
+.game7Button {
+    display: block;
+
+    margin: 0 auto;
+
+    border: 4px solid #720f38;
+    border-radius: 15px;
+
+    background: #720f38;
+    color: white;
+
+    padding: 13px 25px;
+
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.game7Button:hover {
+    background: #8f1748;
+}
+
+.game7Hidden {
+    display: none !important;
+}
+
+
+/* МОБИЛКА */
+
+@media (max-width: 600px) {
+
+    .game7Back {
+        width: 45px;
+        top: 12px;
+        left: 12px;
+    }
+
+    .game7Title {
+        top: 17px;
+        font-size: 26px;
+    }
+
+    .game7Box {
+        gap: 14px;
+    }
+
+    .game7Question {
+        padding: 22px 15px;
+    }
+
+    .game7Answers {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .game7Answer {
+        min-height: 60px;
+    }
+
+    .game7WinBox {
+        padding: 20px;
+    }
+}
+
+</style>
+
+
+<!-- ЭКРАН ИГРЫ 7 -->
+
+<div
+    id="game7Screen"
+    class="hidden"
+>
+
+    <img
+        class="game7Back"
+        src="images/game1-back.png"
+        onclick="backFromGame7()"
+    >
+
+    <h1 class="game7Title">
+        Театральный IQ
+    </h1>
+
+
+    <div class="game7Box">
+
+        <div
+            id="game7QuestionNumber"
+            class="game7QuestionNumber"
+        >
+            ВОПРОС 1 / 10
+        </div>
+
+
+        <div
+            id="game7Question"
+            class="game7Question"
+        >
+        </div>
+
+
+        <div
+            id="game7Answers"
+            class="game7Answers"
+        >
+        </div>
+
+
+        <div
+            id="game7Comment"
+            class="game7Comment"
+        >
+        </div>
+
+
+        <button
+            id="game7Next"
+            class="game7Next"
+            onclick="nextGame7Question()"
+        >
+            Дальше →
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ФИНАЛЬНОЕ ПОЗДРАВЛЕНИЕ -->
+
+<div
+    id="game7Win"
+    class="game7Win game7Hidden"
+>
+
+    <div class="game7WinBox">
+
+        <div class="game7WinTitle">
+            🎭 ТЕАТРАЛЬНЫЙ IQ УСТАНОВЛЕН 🎭
+        </div>
+
+
+        <div class="game7WinText">Дорогая моя мини бро! 😏
+
+Поздравляю тебя с днëм рождения! 🥳 Вот и исполнилось тебе 18 лет! 🤯 Стареешь... Сначала 18 лет, а потом кредиты, дети, жëны, как это всё не просто. Но я уверена, что ты справишься! Желаю тебе счастья, здоровья, миллиард деняк, много много самых настоящих и верных друзей, успехов в учëбе и в любых твоих будущих начинаниях, море удачи и дачу у моря!
+
+Ты у нас самая добрая, справедливая, чуткая, за ЗОЖ 😎 и никогда не бросишь друга в беде! Спасибо тебе, что ты такая чудесная! 🥰💋❤️
+
+/Милана</div>
+
+
+        <button
+            class="game7Button"
+            onclick="backFromGame7()"
+        >
+            На главный экран 💗
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   ИГРА 7 — JAVASCRIPT
+========================= */
+
+const game7Screen =
+    document.getElementById("game7Screen");
+
+const game7QuestionNumber =
+    document.getElementById("game7QuestionNumber");
+
+const game7Question =
+    document.getElementById("game7Question");
+
+const game7Answers =
+    document.getElementById("game7Answers");
+
+const game7Comment =
+    document.getElementById("game7Comment");
+
+const game7Next =
+    document.getElementById("game7Next");
+
+const game7Win =
+    document.getElementById("game7Win");
+
+
+let game7Current = 0;
+let game7Score = 0;
+let game7Answered = false;
+
+
+/* =========================
+   ВОПРОСЫ
+========================= */
+
+const game7Questions = [
+
+    {
+        question:
+            "Как называется расположение актёров на сцене в определённый момент спектакля?",
+
+        answers: [
+            "Темпоритм",
+            "Мизансцена",
+            "Экспозиция",
+            "Сценическая речь"
+        ],
+
+        correct: 1,
+
+        comment:
+            "✓ Правильно. Ты пока ещё выглядишь как человек."
+    },
+
+
+    {
+        question:
+            "Что является сверхзадачей персонажа?",
+
+        answers: [
+            "Его самая большая проблема",
+            "Его главная цель на протяжении действия",
+            "То, что он хочет съесть",
+            "Причина, по которой он пришёл в театр"
+        ],
+
+        correct: 1,
+
+        comment:
+            "✓ Отлично. Подозрительно хорошо."
+    },
+
+
+    {
+        question:
+            "Что такое «предлагаемые обстоятельства»?",
+
+        answers: [
+            "Погода за окном театра",
+            "Внешние условия и обстоятельства, в которых существует персонаж",
+            "Указания режиссёра",
+            "Всё, что происходит за кулисами"
+        ],
+
+        correct: 1,
+
+        comment:
+            "✓ Ты действительно это знаешь."
+    },
+
+
+    {
+        question:
+            "На сцене стоит человек. Он молчит уже 47 секунд. Зрители начинают нервничать. Что он делает?",
+
+        answers: [
+            "Ждёт реплику",
+            "Показывает внутреннее состояние",
+            "Создаёт напряжение",
+            "ЕБУЧУЮ ПАУЗУ"
+        ],
+
+        correct: 3,
+
+        comment:
+            "✓ Ты знаешь страшные вещи."
+    },
+
+
+    {
+        question:
+            "Почему этот стул стоит посреди сцены?",
+
+        answers: [
+            "Потому что его забыли убрать",
+            "Потому что актёру надо на него сесть",
+            "Потому что это символ одиночества",
+            "Зависит от концепции режиссёра"
+        ],
+
+        correct: 3,
+
+        comment:
+            "✓ Поздравляем. Ты избежала ловушки. Стул тоже был частью экзамена."
+    },
+
+
+    {
+        question:
+            "Режиссёр говорит актёру: «Ещё раз. Только не играй». Что он имеет в виду?",
+
+        answers: [
+            "Играй меньше",
+            "Будь естественнее",
+            "Убери наигранность",
+            "Он сам не знает, чего хочет"
+        ],
+
+        correct: 3,
+
+        comment:
+            "✓ Правильно. Ты уже видела слишком много репетиций."
+    },
+
+
+    {
+        question:
+            "Актёр забыл текст. Что он должен сделать?",
+
+        answers: [
+            "Замолчать",
+            "Начать импровизировать",
+            "Выйти из роли и извиниться",
+            "Сделать вид, что так было задумано"
+        ],
+
+        correct: 3,
+
+        comment:
+            "✓ Главное — уверенно. Если делаешь вид, что всё под контролем, возможно, зритель тоже поверит."
+    },
+
+
+    {
+        question:
+            "Актёр выходит на сцену, делает два шага, останавливается, смотрит на стул, садится, молчит и уходит. Почему?",
+
+        answers: [
+            "Забыл текст",
+            "Стул был горячий",
+            "Это спектакль",
+            "У зрителя должна возникнуть мысль"
+        ],
+
+        correct: 2,
+
+        comment:
+            "✓ Именно. Стул существует. Больше тебе знать не положено."
+    },
+
+
+    {
+        question:
+            "На сцене стоит ружьё. Никто его не использует. Никто о нём не говорит. Спектакль заканчивается. Твои действия?",
+
+        answers: [
+            "Ничего",
+            "Уйти домой",
+            "Пойти ругаться с режиссёром",
+            "ЖДАТЬ"
+        ],
+
+        correct: 3,
+
+        comment:
+            "✓ Ты дождалась. Чехов где-то одобрительно кивнул."
+    },
+
+
+    {
+        question:
+            "КТО ТАКОЙ ЧЕХОВ?",
+
+        answers: [
+            "Писатель",
+            "Драматург",
+            "Человек, который придумал страдать на сцене",
+            "ЧЕХОВ"
+        ],
+
+        correct: 3,
+
+        comment:
+            "✓ Правильно. Где-то далеко появился ещё один стул."
+    }
+
+];
+
+
+/* =========================
+   ОТКРЫТИЕ
+========================= */
+
+function openGame7() {
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .add("hidden");
+
+    game7Screen
+        .classList
+        .remove("hidden");
+
+    game7Win
+        .classList
+        .add("game7Hidden");
+
+    game7Current = 0;
+    game7Score = 0;
+
+    showGame7Question();
+}
+
+
+/* =========================
+   ПОКАЗ ВОПРОСА
+========================= */
+
+function showGame7Question() {
+
+    const q =
+        game7Questions[game7Current];
+
+    game7Answered = false;
+
+    game7QuestionNumber.innerHTML =
+        "ВОПРОС " +
+        (game7Current + 1) +
+        " / " +
+        game7Questions.length;
+
+    game7Question.innerHTML =
+        q.question;
+
+    game7Answers.innerHTML = "";
+
+    game7Comment.innerHTML = "";
+
+    game7Next.style.display =
+        "none";
+
+
+    q.answers.forEach(
+        function(answer, index) {
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "game7Answer";
+
+            button.innerHTML =
+                answer;
+
+            button.onclick =
+                function() {
+
+                    answerGame7(index);
+                };
+
+            game7Answers.appendChild(button);
+        }
+    );
+}
+
+
+/* =========================
+   ОТВЕТ
+========================= */
+
+function answerGame7(index) {
+
+    if (game7Answered)
+        return;
+
+    game7Answered = true;
+
+    const q =
+        game7Questions[game7Current];
+
+    const buttons =
+        game7Answers.querySelectorAll(
+            ".game7Answer"
+        );
+
+
+    buttons.forEach(
+        function(button, i) {
+
+            if (i === q.correct) {
+
+                button.classList.add(
+                    "correct"
+                );
+            }
+
+            button.disabled = true;
+        }
+    );
+
+
+    if (index === q.correct) {
+
+        game7Score++;
+
+        game7Comment.innerHTML =
+            q.comment;
+
+    } else {
+
+        buttons[index]
+            .classList
+            .add("wrong");
+
+        game7Comment.innerHTML =
+            "✗ НЕТ. Театр разочарован. Но ладно, живи.";
+
+    }
+
+
+    if (
+        game7Current ===
+        game7Questions.length - 1
+    ) {
+
+        game7Next.innerHTML =
+            "Узнать диагноз 💀";
+
+    } else {
+
+        game7Next.innerHTML =
+            "Дальше →";
+    }
+
+
+    game7Next.style.display =
+        "block";
+}
+
+
+/* =========================
+   СЛЕДУЮЩИЙ
+========================= */
+
+function nextGame7Question() {
+
+    if (!game7Answered)
+        return;
+
+
+    if (
+        game7Current >=
+        game7Questions.length - 1
+    ) {
+
+        finishGame7();
+
+        return;
+    }
+
+
+    game7Current++;
+
+    showGame7Question();
+}
+
+
+/* =========================
+   ФИНАЛ
+========================= */
+
+function finishGame7() {
+
+    game7Win
+        .classList
+        .remove("game7Hidden");
+
+    game7Win
+        .querySelector(".game7WinTitle")
+        .innerHTML =
+            "🎭 ТЕАТРАЛЬНЫЙ IQ: " +
+            game7Score +
+            " / " +
+            game7Questions.length;
+
+}
+
+
+/* =========================
+   НАЗАД
+========================= */
+
+function backFromGame7() {
+
+    game7Screen
+        .classList
+        .add("hidden");
+
+    game7Win
+        .classList
+        .add("game7Hidden");
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .remove("hidden");
+}
+
+</script>
+<!-- =========================
+     ИГРА 8 — ПОМОГИ НАПИСАТЬ
+========================= -->
+
+<style>
+
+#game8Screen {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+
+    background: #f8c9dc;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow: hidden;
+
+    font-family: Arial, sans-serif;
+}
+
+
+/* НАЗВАНИЕ */
+
+.game8Title {
+    margin: 12px 0 4px;
+
+    color: #720f38;
+
+    font-size: clamp(25px, 4vw, 38px);
+    font-weight: 800;
+
+    text-align: center;
+
+    z-index: 20;
+}
+
+
+/* ПРИМЕР */
+
+.game8Example {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    color: #720f38;
+
+    font-size: clamp(14px, 2vw, 19px);
+    font-weight: bold;
+
+    margin-bottom: 5px;
+
+    z-index: 20;
+}
+
+.game8Example img {
+    height: 180px;
+    width: auto;
+
+    object-fit: contain;
+}
+
+
+/* ТАЙМЕР */
+
+.game8Timer {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    color: #720f38;
+
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 900;
+
+    z-index: 100;
+}
+
+
+/* КНОПКА НАЗАД */
+
+.game8Back {
+    position: absolute;
+
+    top: 18px;
+    left: 18px;
+
+    width: 55px;
+
+    cursor: pointer;
+
+    z-index: 100;
+}
+
+
+/* ИГРОВОЕ ПОЛЕ */
+
+.game8Field {
+    position: relative;
+
+    width: min(1100px, 96vw);
+    height: min(650px, 68vh);
+
+    margin-top: 5px;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+
+/* БЕЛЫЙ ЛИСТ */
+
+.game8Paper {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(600px, 58vw);
+    height: min(500px, 64vh);
+
+    background: white;
+
+    border: 4px solid #720f38;
+
+    box-sizing: border-box;
+
+    z-index: 5;
+
+    box-shadow:
+        7px 7px 0 rgba(114, 15, 56, 0.2);
+}
+
+
+/* ДЕТАЛЬКИ */
+
+.game8Part {
+    position: absolute;
+
+    width: 200px;
+    height: 200px;
+
+    object-fit: contain;
+
+    cursor: grab;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+
+    z-index: 15;
+
+    touch-action: none;
+
+    transition:
+        transform 0.12s ease;
+}
+
+.game8Part:hover {
+    transform: scale(1.06);
+}
+
+.game8Part.dragging {
+    cursor: grabbing;
+
+    transform:
+        scale(1.08);
+
+    z-index: 50;
+}
+
+
+/* ИТОГОВАЯ КАРТИНКА НА ЛИСТЕ */
+
+.game8ResultImage {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 94%;
+    height: 94%;
+
+    object-fit: contain;
+
+    z-index: 40;
+}
+
+
+/* ЧУДИКИ */
+
+.game8Characters {
+    position: absolute;
+
+    left: 25px;
+    bottom: 10px;
+
+    display: flex;
+    align-items: flex-end;
+
+    gap: 3px;
+
+    z-index: 60;
+}
+
+
+/* ЧУДИКИ БОЛЬШЕ */
+
+.game8Character {
+    width: 175px;
+    height: 220px;
+
+    object-fit: contain;
+
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+
+/* ПРЫЖКИ */
+
+.game8Jump1 {
+    animation:
+        game8Jump1 0.8s ease-in-out infinite;
+}
+
+.game8Jump2 {
+    animation:
+        game8Jump2 0.8s ease-in-out infinite;
+}
+
+@keyframes game8Jump1 {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+}
+
+@keyframes game8Jump2 {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-13px);
+    }
+
+}
+
+
+/* РЕЧЕВОЕ ОБЛАЧКО */
+
+.game8Speech {
+    position: absolute;
+
+    left: 25px;
+    bottom: 235px;
+
+    background: white;
+
+    border: 4px solid #720f38;
+    border-radius: 16px;
+
+    padding: 12px 18px;
+
+    color: #720f38;
+
+    font-size: 19px;
+    font-weight: bold;
+
+    z-index: 70;
+
+    display: none;
+
+    box-shadow:
+        5px 5px 0 rgba(114, 15, 56, 0.2);
+}
+
+
+/* КАРТИНКА ВМЕСТО ЧУДИКОВ */
+
+.game8Together {
+    position: absolute;
+
+    left: 130px;
+    bottom: 35px;
+
+    width: 230px;
+    height: 230px;
+
+    object-fit: contain;
+
+    z-index: 100;
+}
+
+
+/* КНОПКА ПОЗДРАВЛЕНИЯ */
+
+.game8GreetingButton {
+    position: absolute;
+
+    left: 50%;
+    bottom: 18px;
+
+    transform: translateX(-50%);
+
+    padding: 13px 25px;
+
+    border: 4px solid #720f38;
+    border-radius: 15px;
+
+    background: #720f38;
+    color: white;
+
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    z-index: 150;
+
+    display: none;
+}
+
+.game8GreetingButton:hover {
+    background: #8f1748;
+}
+
+
+/* ФИНАЛЬНОЕ ПОЗДРАВЛЕНИЕ */
+
+.game8Win {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 300;
+
+    background: #f8c9dc;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+}
+
+.game8WinBox {
+    width: min(850px, 94vw);
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: white;
+
+    border: 5px solid #720f38;
+    border-radius: 20px;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    color: #720f38;
+
+    box-shadow:
+        10px 10px 0 rgba(114, 15, 56, 0.25);
+}
+
+.game8WinTitle {
+    text-align: center;
+
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+.game8WinText {
+    font-size: clamp(16px, 2vw, 21px);
+
+    line-height: 1.55;
+
+    white-space: pre-line;
+
+    margin-bottom: 25px;
+}
+
+.game8Button {
+    display: block;
+
+    margin: 0 auto;
+
+    padding: 13px 25px;
+
+    border: 4px solid #720f38;
+    border-radius: 15px;
+
+    background: #720f38;
+    color: white;
+
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.game8Button:hover {
+    background: #8f1748;
+}
+
+
+.game8Hidden {
+    display: none !important;
+}
+
+
+/* МОБИЛЬНАЯ ВЕРСИЯ */
+
+@media (max-width: 600px) {
+
+    .game8Back {
+        width: 45px;
+
+        top: 12px;
+        left: 12px;
+    }
+
+    .game8Title {
+        margin-top: 12px;
+
+        font-size: 25px;
+    }
+
+    .game8Example img {
+        height: 100px;
+    }
+
+    .game8Timer {
+        top: 15px;
+        right: 15px;
+
+        font-size: 22px;
+    }
+
+    .game8Field {
+        width: 100vw;
+        height: 70vh;
+    }
+
+    .game8Paper {
+        width: 60vw;
+        height: 52vh;
+    }
+
+    .game8Part {
+        width: 110px;
+        height: 110px;
+    }
+
+    .game8Character {
+        width: 110px;
+        height: 145px;
+    }
+
+    .game8Characters {
+        left: 10px;
+        bottom: 10px;
+    }
+
+    .game8Speech {
+        left: 10px;
+        bottom: 155px;
+
+        font-size: 15px;
+    }
+
+    .game8Together {
+        left: 55px;
+        bottom: 25px;
+
+        width: 150px;
+        height: 150px;
+    }
+
+    .game8WinBox {
+        padding: 20px;
+    }
+
+}
+
+
+/* СОВСЕМ УЗКИЙ ЭКРАН */
+
+@media (max-width: 420px) {
+
+    .game8Example img {
+        height: 85px;
+    }
+
+    .game8Paper {
+        width: 62vw;
+        height: 50vh;
+    }
+
+    .game8Part {
+        width: 90px;
+        height: 90px;
+    }
+
+    .game8Character {
+        width: 90px;
+        height: 120px;
+    }
+
+    .game8Together {
+        left: 45px;
+        bottom: 20px;
+
+        width: 125px;
+        height: 125px;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================
+     ЭКРАН ИГРЫ
+========================= -->
+
+<div
+    id="game8Screen"
+    class="hidden"
+>
+
+    <img
+        class="game8Back"
+        src="images/game1-back.png"
+        onclick="backFromGame8()"
+    >
+
+
+    <div class="game8Timer">
+        ⏱ <span id="game8Time">15</span>
+    </div>
+
+
+    <h1 class="game8Title">
+        Помоги написать!
+    </h1>
+
+
+    <div class="game8Example">
+
+        <span>
+            Вот пример:
+        </span>
+
+        <img
+            src="images/game8primer.png"
+        >
+
+    </div>
+
+
+    <div
+        id="game8Field"
+        class="game8Field"
+    >
+
+        <!-- БЕЛЫЙ ЛИСТ -->
+
+        <div
+            id="game8Paper"
+            class="game8Paper"
+        >
+        </div>
+
+
+        <!-- ДЕТАЛЬКИ -->
+
+        <img
+            id="game8Part1"
+            class="game8Part"
+            src="images/game8pt1.png"
+        >
+
+        <img
+            id="game8Part2"
+            class="game8Part"
+            src="images/game8pt2.png"
+        >
+
+        <img
+            id="game8Part3"
+            class="game8Part"
+            src="images/game8pt3.png"
+        >
+
+        <img
+            id="game8Part4"
+            class="game8Part"
+            src="images/game8pt4.png"
+        >
+
+        <img
+            id="game8Part5"
+            class="game8Part"
+            src="images/game8pt5.png"
+        >
+
+        <img
+            id="game8Part6"
+            class="game8Part"
+            src="images/game8pt6.png"
+        >
+
+        <img
+            id="game8Part7"
+            class="game8Part"
+            src="images/game8pt7.png"
+        >
+
+
+        <!-- ИТОГ -->
+
+        <img
+            id="game8ResultImage"
+            class="game8ResultImage game8Hidden"
+            src="images/game8itog.png"
+        >
+
+
+        <!-- ЧУДИКИ -->
+
+        <div
+            id="game8Characters"
+            class="game8Characters"
+        >
+
+            <img
+                id="game8Char1"
+                class="game8Character game8Jump1"
+                src="images/game8xc.png"
+            >
+
+            <img
+                id="game8Char2"
+                class="game8Character game8Jump2"
+                src="images/game8xl.png"
+            >
+
+        </div>
+
+
+        <!-- РЕПЛИКА -->
+
+        <div
+            id="game8Speech"
+            class="game8Speech"
+        >
+        </div>
+
+
+        <!-- КАРТИНКА ВМЕСТО ЧУДИКОВ -->
+
+        <img
+            id="game8Together"
+            class="game8Together game8Hidden"
+            src="images/game8xyaliani.jpg"
+        >
+
+    </div>
+
+
+    <button
+        id="game8GreetingButton"
+        class="game8GreetingButton"
+        onclick="showGame8Greeting()"
+    >
+        получить поздравление
+    </button>
+
+</div>
+
+
+<!-- =========================
+     ПОЗДРАВЛЕНИЕ
+========================= -->
+
+<div
+    id="game8Win"
+    class="game8Win game8Hidden"
+>
+
+    <div class="game8WinBox">
+
+        <div class="game8WinTitle">
+            💗 С ДНЁМ РОЖДЕНИЯ! 💗
+        </div>
+
+
+        <div class="game8WinText">Миленааааа! С днем рождения! Подумать только, еще недавно как-будто была школьницей с кудряво-барашковой стрижкой, а теперь уже вообще леди на 10000 из 10. Я безумно рада, что с тобой познакомилась, ты самый добрый, искренний, чуткий человек в моей жизни. Желаю тебе, чтобы все-все хорошее сбывалось, а все плохое -- нет! Люблю тебя &lt;3
+
+/Оля</div>
+
+
+        <button
+            class="game8Button"
+            onclick="backFromGame8()"
+        >
+            На главный экран 💗
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   ИГРА 8 — JAVASCRIPT
+========================= */
+
+const game8Screen =
+    document.getElementById("game8Screen");
+
+const game8Field =
+    document.getElementById("game8Field");
+
+const game8Paper =
+    document.getElementById("game8Paper");
+
+const game8Time =
+    document.getElementById("game8Time");
+
+const game8ResultImage =
+    document.getElementById("game8ResultImage");
+
+const game8Characters =
+    document.getElementById("game8Characters");
+
+const game8Char1 =
+    document.getElementById("game8Char1");
+
+const game8Char2 =
+    document.getElementById("game8Char2");
+
+const game8Speech =
+    document.getElementById("game8Speech");
+
+const game8Together =
+    document.getElementById("game8Together");
+
+const game8GreetingButton =
+    document.getElementById("game8GreetingButton");
+
+const game8Win =
+    document.getElementById("game8Win");
+
+
+const game8Parts = [
+
+    document.getElementById("game8Part1"),
+    document.getElementById("game8Part2"),
+    document.getElementById("game8Part3"),
+    document.getElementById("game8Part4"),
+    document.getElementById("game8Part5"),
+    document.getElementById("game8Part6"),
+    document.getElementById("game8Part7")
+
+];
+
+
+let game8Timer = null;
+
+let game8TimeLeft = 15;
+
+let game8Finished = false;
+
+let game8Dragging = null;
+
+let game8DragOffsetX = 0;
+let game8DragOffsetY = 0;
+
+
+/* =========================
+   ОТКРЫТИЕ
+========================= */
+
+function openGame8() {
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .add("hidden");
+
+    game8Screen
+        .classList
+        .remove("hidden");
+
+    game8Win
+        .classList
+        .add("game8Hidden");
+
+    startGame8();
+}
+
+
+/* =========================
+   НАЧАЛО
+========================= */
+
+function startGame8() {
+
+    clearInterval(game8Timer);
+
+    game8Finished = false;
+
+    game8TimeLeft = 15;
+
+    game8Time.innerHTML =
+        game8TimeLeft;
+
+
+    game8ResultImage
+        .classList
+        .add("game8Hidden");
+
+
+    game8Together
+        .classList
+        .add("game8Hidden");
+
+
+    game8GreetingButton.style.display =
+        "none";
+
+
+    game8Speech.style.display =
+        "none";
+
+
+    game8Characters.style.display =
+        "flex";
+
+
+    game8Char1.classList.add(
+        "game8Jump1"
+    );
+
+    game8Char2.classList.add(
+        "game8Jump2"
+    );
+
+
+    /* возвращаем детали */
+
+    game8Parts.forEach(
+        function(part) {
+
+            part.style.display =
+                "block";
+
+            part.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    /* ставим детали */
+
+    placeGame8Parts();
+
+
+    /* таймер */
+
+    game8Timer =
+        setInterval(
+            function() {
+
+                game8TimeLeft--;
+
+                game8Time.innerHTML =
+                    game8TimeLeft;
+
+
+                if (
+                    game8TimeLeft <= 0
+                ) {
+
+                    clearInterval(
+                        game8Timer
+                    );
+
+                    finishGame8Timer();
+
+                }
+
+            },
+            1000
+        );
+}
+
+
+/* =========================
+   РАЗБРОС ДЕТАЛЕК
+========================= */
+
+function placeGame8Parts() {
+
+    const fieldRect =
+        game8Field.getBoundingClientRect();
+
+    const paperRect =
+        game8Paper.getBoundingClientRect();
+
+
+    const fieldWidth =
+        fieldRect.width;
+
+    const fieldHeight =
+        fieldRect.height;
+
+
+    const paperLeft =
+        paperRect.left -
+        fieldRect.left;
+
+    const paperRight =
+        paperRect.right -
+        fieldRect.left;
+
+    const paperTop =
+        paperRect.top -
+        fieldRect.top;
+
+    const paperBottom =
+        paperRect.bottom -
+        fieldRect.top;
+
+
+    const positions = [];
+
+
+    game8Parts.forEach(
+        function(part) {
+
+            const partSize =
+                part.offsetWidth;
+
+
+            let x;
+            let y;
+
+            let tries = 0;
+
+            let valid = false;
+
+
+            while (
+                !valid &&
+                tries < 500
+            ) {
+
+                tries++;
+
+
+                x =
+                    15 +
+                    Math.random() *
+                    Math.max(
+                        1,
+                        fieldWidth -
+                        partSize -
+                        30
+                    );
+
+
+                y =
+                    15 +
+                    Math.random() *
+                    Math.max(
+                        1,
+                        fieldHeight -
+                        partSize -
+                        30
+                    );
+
+
+                const partLeft =
+                    x;
+
+                const partRight =
+                    x + partSize;
+
+                const partTop =
+                    y;
+
+                const partBottom =
+                    y + partSize;
+
+
+                /* не залезаем на лист */
+
+                const touchesPaper =
+                    !(
+                        partRight <
+                        paperLeft - 10 ||
+
+                        partLeft >
+                        paperRight + 10 ||
+
+                        partBottom <
+                        paperTop - 10 ||
+
+                        partTop >
+                        paperBottom + 10
+                    );
+
+
+                if (touchesPaper)
+                    continue;
+
+
+                /* не перекрываем другие */
+
+                let overlaps =
+                    false;
+
+
+                for (
+                    let i = 0;
+                    i < positions.length;
+                    i++
+                ) {
+
+                    const other =
+                        positions[i];
+
+
+                    const distance =
+                        Math.sqrt(
+                            Math.pow(
+                                x - other.x,
+                                2
+                            ) +
+                            Math.pow(
+                                y - other.y,
+                                2
+                            )
+                        );
+
+
+                    if (
+                        distance <
+                        partSize + 15
+                    ) {
+
+                        overlaps =
+                            true;
+
+                        break;
+                    }
+
+                }
+
+
+                if (!overlaps) {
+
+                    valid = true;
+
+                }
+
+            }
+
+
+            positions.push({
+                x: x,
+                y: y
+            });
+
+
+            part.style.left =
+                x + "px";
+
+            part.style.top =
+                y + "px";
+
+        }
+    );
+}
+
+
+/* =========================
+   ПЕРЕТАСКИВАНИЕ
+========================= */
+
+game8Parts.forEach(
+    function(part) {
+
+        part.addEventListener(
+            "pointerdown",
+            startGame8Drag
+        );
+
+    }
+);
+
+
+function startGame8Drag(event) {
+
+    if (game8Finished)
+        return;
+
+
+    game8Dragging =
+        event.currentTarget;
+
+
+    const rect =
+        game8Dragging.getBoundingClientRect();
+
+
+    game8DragOffsetX =
+        event.clientX -
+        rect.left;
+
+
+    game8DragOffsetY =
+        event.clientY -
+        rect.top;
+
+
+    game8Dragging.classList.add(
+        "dragging"
+    );
+
+
+    game8Dragging.setPointerCapture(
+        event.pointerId
+    );
+
+
+    game8Dragging.addEventListener(
+        "pointermove",
+        moveGame8Drag
+    );
+
+    game8Dragging.addEventListener(
+        "pointerup",
+        stopGame8Drag
+    );
+
+    game8Dragging.addEventListener(
+        "pointercancel",
+        stopGame8Drag
+    );
+
+}
+
+
+/* ДВИЖЕНИЕ */
+
+function moveGame8Drag(event) {
+
+    if (!game8Dragging)
+        return;
+
+
+    const fieldRect =
+        game8Field.getBoundingClientRect();
+
+
+    let x =
+        event.clientX -
+        fieldRect.left -
+        game8DragOffsetX;
+
+
+    let y =
+        event.clientY -
+        fieldRect.top -
+        game8DragOffsetY;
+
+
+    const maxX =
+        game8Field.clientWidth -
+        game8Dragging.offsetWidth;
+
+
+    const maxY =
+        game8Field.clientHeight -
+        game8Dragging.offsetHeight;
+
+
+    x =
+        Math.max(
+            0,
+            Math.min(x, maxX)
+        );
+
+
+    y =
+        Math.max(
+            0,
+            Math.min(y, maxY)
+        );
+
+
+    game8Dragging.style.left =
+        x + "px";
+
+    game8Dragging.style.top =
+        y + "px";
+
+}
+
+
+/* ОСТАНОВКА */
+
+function stopGame8Drag(event) {
+
+    if (!game8Dragging)
+        return;
+
+
+    game8Dragging.classList.remove(
+        "dragging"
+    );
+
+
+    game8Dragging.removeEventListener(
+        "pointermove",
+        moveGame8Drag
+    );
+
+    game8Dragging.removeEventListener(
+        "pointerup",
+        stopGame8Drag
+    );
+
+    game8Dragging.removeEventListener(
+        "pointercancel",
+        stopGame8Drag
+    );
+
+
+    game8Dragging = null;
+
+}
+
+
+/* =========================
+   ВРЕМЯ ВЫШЛО
+========================= */
+
+function finishGame8Timer() {
+
+    if (game8Finished)
+        return;
+
+
+    game8Finished = true;
+
+
+    /* детали исчезают */
+
+    game8Parts.forEach(
+        function(part) {
+
+            part.style.display =
+                "none";
+
+        }
+    );
+
+
+    /* появляется готовый результат */
+
+    game8ResultImage
+        .classList
+        .remove("game8Hidden");
+
+
+    game8Time.innerHTML =
+        "0";
+
+
+    /* чудики перестают прыгать */
+
+    game8Char1.classList.remove(
+        "game8Jump1"
+    );
+
+    game8Char2.classList.remove(
+        "game8Jump2"
+    );
+
+
+    /*
+       Через 2.5 секунды —
+       первый диалог
+    */
+
+    setTimeout(
+        function() {
+
+            game8Speech.innerHTML =
+                "Саньлан, опять криво :(";
+
+            game8Speech.style.display =
+                "block";
+
+
+            setTimeout(
+                function() {
+
+                    game8Speech.innerHTML =
+                        "Гэгэ, прости :(";
+
+
+                    setTimeout(
+                        function() {
+
+                            startGame8Ending();
+
+                        },
+                        1200
+                    );
+
+                },
+                1600
+            );
+
+        },
+        2500
+    );
+}
+
+
+/* =========================
+   ФИНАЛЬНАЯ СЦЕНА
+========================= */
+
+function startGame8Ending() {
+
+    game8Speech.innerHTML =
+        ":)";
+
+
+    /*
+       Чудик 1 двигается
+       к чудiku 2
+    */
+
+    const startLeft =
+        game8Char1.offsetLeft;
+
+
+    const startTop =
+        game8Char1.offsetTop;
+
+
+    const targetLeft =
+        game8Char2.offsetLeft;
+
+
+    const targetTop =
+        game8Char2.offsetTop;
+
+
+    const duration =
+        1800;
+
+
+    const startTime =
+        performance.now();
+
+
+    function moveCharacter(now) {
+
+        const progress =
+            Math.min(
+                1,
+                (now - startTime) /
+                duration
+            );
+
+
+        const eased =
+            progress *
+            progress *
+            (3 - 2 * progress);
+
+
+        const currentLeft =
+            startLeft +
+            (targetLeft - startLeft) *
+            eased;
+
+
+        const currentTop =
+            startTop +
+            (targetTop - startTop) *
+            eased;
+
+
+        game8Char1.style.position =
+            "relative";
+
+
+        game8Char1.style.left =
+            (
+                currentLeft -
+                startLeft
+            ) + "px";
+
+
+        game8Char1.style.top =
+            (
+                currentTop -
+                startTop
+            ) + "px";
+
+
+        if (progress < 1) {
+
+            requestAnimationFrame(
+                moveCharacter
+            );
+
+        } else {
+
+            finishGame8Characters();
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        moveCharacter
+    );
+
+}
+
+
+/* =========================
+   ЧУДИКИ ИСЧЕЗАЮТ
+========================= */
+
+function finishGame8Characters() {
+
+    game8Speech.style.display =
+        "none";
+
+
+    game8Characters.style.display =
+        "none";
+
+
+    /*
+       КАРТИНКА ПОЯВЛЯЕТСЯ
+       НА МЕСТЕ ЧУДИКОВ
+    */
+
+    game8Together
+        .classList
+        .remove("game8Hidden");
+
+
+    setTimeout(
+        function() {
+
+            game8GreetingButton.style.display =
+                "block";
+
+        },
+        700
+    );
+}
+
+
+/* =========================
+   ПОКАЗ ПОЗДРАВЛЕНИЯ
+========================= */
+
+function showGame8Greeting() {
+
+    game8Win
+        .classList
+        .remove("game8Hidden");
+
+}
+
+
+/* =========================
+   НАЗАД
+========================= */
+
+function backFromGame8() {
+
+    clearInterval(
+        game8Timer
+    );
+
+
+    game8Finished = true;
+
+
+    game8Screen
+        .classList
+        .add("hidden");
+
+
+    game8Win
+        .classList
+        .add("game8Hidden");
+
+
+    document
+        .getElementById("mainScreen")
+        .classList
+        .remove("hidden");
+
+}
+
+</script>
